@@ -48,22 +48,24 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 64px;
+            min-height: 56px;
             background: rgba(255,255,255,0.85);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-bottom: 1px solid var(--border);
             display: flex;
-            justify-content: space-between;
+            flex-wrap: nowrap;
             align-items: center;
-            padding: 0 48px;
+            gap: 12px;
+            padding: 10px 28px;
             z-index: 100;
         }
 
         .nav-left {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
+            flex-shrink: 0;
         }
 
         .nav-brand {
@@ -95,21 +97,30 @@
 
         .nav-right {
             display: flex;
-            gap: 6px;
+            gap: 2px;
             align-items: center;
+            justify-content: center;
+            flex: 1;
+            min-width: 0;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none;
         }
+        .nav-right::-webkit-scrollbar { display: none; }
 
         .nav-tab {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
-            padding: 7px 16px;
+            padding: 6px 12px;
             border-radius: var(--radius-pill);
             text-decoration: none;
             color: var(--text-mid);
             transition: all var(--transition);
             border: none;
             border-bottom: none;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .nav-tab:hover {
@@ -1126,6 +1137,80 @@
 
         /* ─── SELECTION ─── */
         ::selection { background: var(--accent-glow); color: var(--text); }
+        /* ─── AUTH UI ─── */
+        .auth-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            background: var(--surface);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .auth-btn:hover {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+        }
+        .auth-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .auth-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            min-width: 200px;
+            z-index: 300;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+        .auth-menu.open { display: block; }
+        .auth-menu-item {
+            padding: 12px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .auth-menu-item:hover { background: var(--accent-dim); }
+        .auth-menu-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-mid);
+        }
+        .auth-menu-header strong {
+            display: block;
+            font-size: 14px;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+        .nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .auth-wrapper { position: relative; }
+        .sync-indicator {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #2D8A4E;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+        .sync-indicator.offline { background: var(--text-light); }
         </style>
 </head>
 <body>
@@ -1154,14 +1239,26 @@
             <a class="nav-tab" data-tab="resources">Resources</a>
             <a class="nav-tab" data-tab="journal">Journal</a>
         </div>
-    <div class="lang-switcher">
-                    <span id="lang-badge" onclick="document.getElementById('lang-dropdown').classList.toggle('open')">🇮🇹 IT</span>
-                    <div id="lang-dropdown">
-                        <div class="lang-option active" onclick="switchLanguage('italian')">🇮🇹 Italian <span class="lang-prog">active</span></div>
-                        <div class="lang-option" onclick="switchLanguage('french')">🇫🇷 French</div>
-                        <div class="lang-option" onclick="switchLanguage('catalan')">🏴 Catalan</div>
-                    </div>
+        <div class="nav-actions">
+            <div class="lang-switcher">
+                <span id="lang-badge" onclick="document.getElementById('lang-dropdown').classList.toggle('open')">🇮🇹 IT</span>
+                <div id="lang-dropdown">
+                    <div class="lang-option active" onclick="switchLanguage('italian')">🇮🇹 Italian <span class="lang-prog">active</span></div>
+                    <div class="lang-option" onclick="switchLanguage('french')">🇫🇷 French</div>
+                    <div class="lang-option" onclick="switchLanguage('catalan')">🏴 Catalan</div>
                 </div>
+            </div>
+            <div class="auth-wrapper">
+            <button class="auth-btn" id="authBtn" onclick="handleAuthClick()">
+                <span id="authLabel">Sign In</span>
+            </button>
+            <div class="auth-menu" id="authMenu">
+                <div class="auth-menu-header" id="authMenuHeader"></div>
+                <div class="auth-menu-item" onclick="syncNow()">Sync Now <span class="sync-indicator" id="syncDot"></span></div>
+                <div class="auth-menu-item" onclick="handleSignOut()">Sign Out</div>
+            </div>
+            </div>
+        </div>
     </nav>
 
     <!-- Main Content -->
@@ -1237,6 +1334,165 @@
             </div>
         </section>
     </main>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ─── FIREBASE CONFIG ───
+        // TODO: Replace with your Firebase project config
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        let firebaseReady = false;
+        let db = null;
+        let auth = null;
+
+        // Only initialize if config is set
+        if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+            firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+            db = firebase.firestore();
+            firebaseReady = true;
+
+            // Enable offline persistence
+            db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+        }
+
+        // ─── AUTH FUNCTIONS ───
+        function handleAuthClick() {
+            if (!firebaseReady) {
+                alert('Firebase not configured yet.\\nSee the firebaseConfig section in the HTML source.');
+                return;
+            }
+            if (auth.currentUser) {
+                // Toggle menu
+                document.getElementById('authMenu').classList.toggle('open');
+            } else {
+                // Sign in with Google
+                const provider = new firebase.auth.GoogleAuthProvider();
+                auth.signInWithPopup(provider).catch(err => {
+                    console.error('Auth error:', err);
+                    alert('Sign in failed: ' + err.message);
+                });
+            }
+        }
+
+        function handleSignOut() {
+            if (!firebaseReady) return;
+            auth.signOut();
+            document.getElementById('authMenu').classList.remove('open');
+        }
+
+        function updateAuthUI(user) {
+            const btn = document.getElementById('authBtn');
+            const label = document.getElementById('authLabel');
+            const menu = document.getElementById('authMenu');
+            const header = document.getElementById('authMenuHeader');
+
+            if (user) {
+                const name = user.displayName || user.email;
+                const photo = user.photoURL;
+                label.textContent = name.split(' ')[0];
+                if (photo) {
+                    const img = document.createElement('img');
+                    img.src = photo;
+                    img.className = 'auth-avatar';
+                    img.alt = name;
+                    // Remove old avatar if exists
+                    const old = btn.querySelector('.auth-avatar');
+                    if (old) old.remove();
+                    btn.prepend(img);
+                }
+                header.innerHTML = '<strong>' + name + '</strong>' + user.email;
+            } else {
+                label.textContent = 'Sign In';
+                const old = btn.querySelector('.auth-avatar');
+                if (old) old.remove();
+                menu.classList.remove('open');
+            }
+        }
+
+        // ─── FIRESTORE SYNC ───
+        async function saveToCloud() {
+            if (!firebaseReady || !auth.currentUser) return;
+            const dot = document.getElementById('syncDot');
+            if (dot) dot.className = 'sync-indicator offline';
+            try {
+                await db.collection('users').doc(auth.currentUser.uid).set({
+                    state: JSON.parse(JSON.stringify(state)),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                if (dot) dot.className = 'sync-indicator';
+            } catch (err) {
+                console.error('Save failed:', err);
+                if (dot) dot.className = 'sync-indicator offline';
+            }
+        }
+
+        async function loadFromCloud() {
+            if (!firebaseReady || !auth.currentUser) return false;
+            try {
+                const doc = await db.collection('users').doc(auth.currentUser.uid).get();
+                if (doc.exists && doc.data().state) {
+                    const cloudState = doc.data().state;
+                    // Merge cloud state into local state
+                    Object.assign(state, cloudState);
+                    return true;
+                }
+            } catch (err) {
+                console.error('Load failed:', err);
+            }
+            return false;
+        }
+
+        function syncNow() {
+            saveToCloud();
+            document.getElementById('authMenu').classList.remove('open');
+        }
+
+        // Auto-save on state changes (debounced)
+        let saveTimeout = null;
+        function scheduleSave() {
+            if (saveTimeout) clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(saveToCloud, 3000);
+        }
+
+        // Listen for auth state changes
+        if (firebaseReady) {
+            auth.onAuthStateChanged(async (user) => {
+                updateAuthUI(user);
+                if (user) {
+                    const loaded = await loadFromCloud();
+                    if (loaded && state.quizComplete) {
+                        // Restore saved session
+                        document.getElementById('quizOverlay').classList.add('hidden');
+                        document.getElementById('navigation').classList.remove('hidden');
+                        document.getElementById('mainContent').classList.remove('hidden');
+                        initializeDashboard();
+                        setupEventListeners();
+                    }
+                }
+            });
+        }
+
+        // Close auth menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('authMenu');
+            const btn = document.getElementById('authBtn');
+            if (menu && !menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.classList.remove('open');
+            }
+        });
+    </script>
 
     <script>
         // Global state
@@ -1519,6 +1775,7 @@
 
             initializeDashboard();
             setupEventListeners();
+            if (typeof scheduleSave === 'function') scheduleSave();
         }
 
         function toggleAllLevels() {
@@ -2487,6 +2744,7 @@
             renderJournalContent();
             // Close dropdown
             document.getElementById('lang-dropdown').classList.remove('open');
+            if (typeof scheduleSave === 'function') scheduleSave();
         }
 
         function renderResourcesContent() {
