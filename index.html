@@ -1,0 +1,2570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODUS MEUS — Language Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #F6F3ED;
+            --surface: #FFFDF9;
+            --card: #FFFFFF;
+            --accent: #C8553D;
+            --accent-hover: #A8432E;
+            --accent-dim: rgba(200, 85, 61, 0.06);
+            --accent-glow: rgba(200, 85, 61, 0.12);
+            --text: #1A1A1A;
+            --text-mid: #5A5A5A;
+            --text-light: #9A9A9A;
+            --border: #E8E3DB;
+            --border-strong: #D0C9BE;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-pill: 100px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.08);
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── NAVIGATION ─── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 48px;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            color: var(--text);
+        }
+
+        .language-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            background: var(--accent-dim);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all var(--transition);
+        }
+
+        .language-badge:hover {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .nav-tab {
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 7px 16px;
+            border-radius: var(--radius-pill);
+            text-decoration: none;
+            color: var(--text-mid);
+            transition: all var(--transition);
+            border: none;
+            border-bottom: none;
+        }
+
+        .nav-tab:hover {
+            color: var(--text);
+            background: var(--accent-dim);
+        }
+
+        .nav-tab.active {
+            color: #fff;
+            background: var(--text);
+            border-bottom-color: transparent;
+        }
+
+        /* ─── QUIZ / ONBOARDING ─── */
+        .quiz-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 26, 26, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .quiz-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            max-width: 500px;
+            width: 100%;
+            padding: 48px 40px;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+            border: none;
+            border-left: none;
+            overflow: hidden;
+        }
+
+        .quiz-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), #E07B5F);
+            transition: width 0.4s ease;
+            border-radius: 0 3px 3px 0;
+        }
+
+        .quiz-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            margin-top: 16px;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .quiz-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            margin-bottom: 20px;
+            transition: border-color var(--transition), box-shadow var(--transition);
+            background: var(--surface);
+        }
+
+        .quiz-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-dim);
+        }
+
+        .language-tiles {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .tile {
+            padding: 24px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            background: var(--surface);
+            transition: all var(--transition);
+        }
+
+        .tile:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tile.selected {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            box-shadow: 0 0 0 3px var(--accent-dim);
+        }
+
+        .tile.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .tile-emoji {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .quiz-multi-select {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-tile {
+            padding: 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all var(--transition);
+        }
+
+        .checkbox-tile input {
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .checkbox-tile:hover {
+            border-color: var(--accent);
+        }
+
+        .checkbox-tile.selected {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .quiz-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--surface);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all var(--transition);
+        }
+
+        .btn:hover {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(200, 85, 61, 0.25);
+        }
+
+        /* ─── LAYOUT ─── */
+        .hidden {
+            display: none !important;
+        }
+
+        main {
+            margin-top: 96px;
+            max-width: 940px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 40px 24px 80px;
+        }
+
+        /* ─── DASHBOARD ─── */
+        .welcome-section {
+            margin-bottom: 64px;
+        }
+
+        .welcome-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+        }
+
+        .user-info {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 40px;
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 6px 16px;
+            background: var(--accent-dim);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .tile-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 36px 24px;
+            position: relative;
+            cursor: pointer;
+            transition: all var(--transition);
+            overflow: hidden;
+        }
+
+        .tile-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tile-card-number {
+            position: absolute;
+            bottom: 12px;
+            right: 16px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 7rem;
+            opacity: 0.04;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .tile-card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 17px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.01em;
+        }
+
+        .tile-card-progress {
+            font-size: 12px;
+            color: var(--text-light);
+            position: relative;
+            z-index: 1;
+        }
+
+        .streak-counter {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 28px;
+            padding: 16px 20px;
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            display: inline-block;
+        }
+
+        /* ─── EXPANDABLE ROWS ─── */
+        .expandable-row {
+            border-bottom: 1px solid var(--border);
+            padding: 18px 0;
+            cursor: pointer;
+            transition: background var(--transition);
+        }
+
+        .expandable-row:hover {
+            background: var(--accent-dim);
+            margin: 0 -12px;
+            padding-left: 12px;
+            padding-right: 12px;
+            border-radius: var(--radius-sm);
+        }
+
+        .expandable-row-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .expandable-row-title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .expandable-row-meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--border);
+            transition: background var(--transition);
+        }
+
+        .progress-dot.filled {
+            background-color: var(--accent);
+        }
+
+        .tag {
+            padding: 3px 10px;
+            background: var(--accent-dim);
+            font-size: 11px;
+            font-weight: 500;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+        }
+
+        .arrow {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .arrow.open {
+            transform: rotate(90deg);
+        }
+
+        .expandable-content {
+            display: none;
+            padding: 24px 0;
+            border-top: 1px solid var(--border);
+            margin-top: 16px;
+            font-size: 14px;
+            line-height: 1.85;
+        }
+
+        .expandable-content.open {
+            display: block;
+        }
+
+        .linguistics-content {
+            margin-bottom: 24px;
+        }
+
+        .linguistics-header {
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 15px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .linguistics-text {
+            color: var(--text-mid);
+            margin-bottom: 14px;
+            font-size: 14px;
+        }
+
+        .ipa-example {
+            background: var(--surface);
+            padding: 14px 16px;
+            margin: 10px 0;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            border-left: 3px solid var(--accent);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            line-height: 1.8;
+        }
+
+        .vocab-note {
+            background: #FFF8F0;
+            padding: 14px 16px;
+            margin: 14px 0;
+            border: none;
+            border-left: 3px solid #E8A020;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            font-size: 13px;
+        }
+
+        .exercise {
+            background: var(--surface);
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 3px solid var(--accent);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .exercise-text {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .exercise-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            transition: border-color var(--transition);
+        }
+
+        .exercise-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .exercise-button {
+            padding: 10px 16px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all var(--transition);
+        }
+
+        .exercise-button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .exercise-feedback {
+            margin-top: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .feedback-correct {
+            color: #2D8A4E;
+        }
+
+        .feedback-incorrect {
+            color: var(--accent);
+        }
+
+        /* ─── DIALOGS ─── */
+        .dialog-scenario {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .dialog-scenario:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dialog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .dialog-title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .dialog-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+        }
+
+        .dialog-content {
+            display: none;
+        }
+
+        .dialog-content.open {
+            display: block;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .dialog-line {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 14px;
+        }
+
+        .dialog-speaker {
+            font-weight: 700;
+            min-width: 120px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--accent);
+            padding-top: 2px;
+        }
+
+        .dialog-text-pair {
+            flex: 1;
+        }
+
+        .dialog-italian {
+            font-size: 14px;
+            margin-bottom: 4px;
+            line-height: 1.65;
+        }
+
+        .dialog-english {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            line-height: 1.65;
+        }
+
+        .dialog-vocab {
+            background: var(--accent-dim);
+            padding: 14px;
+            margin-top: 16px;
+            font-size: 13px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+        }
+
+        .translation-toggle {
+            margin: 16px 0;
+            font-size: 12px;
+        }
+
+        .toggle-btn {
+            padding: 7px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all var(--transition);
+        }
+
+        .toggle-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .practice-mode-btn {
+            padding: 12px 24px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            transition: all var(--transition);
+        }
+
+        .practice-mode-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(200, 85, 61, 0.25);
+        }
+
+        .level-filter {
+            margin-bottom: 24px;
+            display: flex;
+            gap: 8px;
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 7px 16px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        /* ─── RESOURCES ─── */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .resource-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: all var(--transition);
+        }
+
+        .resource-card:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .resource-category-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .resource-item {
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .resource-link {
+            color: var(--accent);
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .resource-link:hover {
+            text-decoration: underline;
+        }
+
+        .resource-description {
+            color: var(--text-light);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .resource-level-tag {
+            display: inline-block;
+            background: var(--accent-dim);
+            padding: 2px 8px;
+            font-size: 11px;
+            margin-top: 4px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+        }
+
+        /* ─── JOURNAL ─── */
+        .journal-layout {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 16px;
+        }
+
+        .journal-writing {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+        }
+
+        .journal-textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 16px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            line-height: 1.8;
+            transition: border-color var(--transition);
+        }
+
+        .journal-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-dim);
+        }
+
+        .journal-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+
+        .word-count {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .journal-save-btn {
+            padding: 10px 20px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all var(--transition);
+        }
+
+        .journal-save-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .journal-sidebar {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+        }
+
+        .journal-prompt {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .journal-prompt-title {
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-mid);
+        }
+
+        .journal-prompt-text {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        .random-prompt-btn {
+            padding: 10px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            width: 100%;
+            margin-bottom: 20px;
+            transition: all var(--transition);
+        }
+
+        .random-prompt-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .category-filter-journal {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .category-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .category-option input {
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .past-entries {
+            font-size: 13px;
+        }
+
+        .past-entries-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-mid);
+        }
+
+        .past-entry {
+            padding: 10px 12px;
+            background: var(--surface);
+            margin-bottom: 6px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            transition: all var(--transition);
+        }
+
+        .past-entry:hover {
+            border-color: var(--accent);
+        }
+
+        .level-note {
+            background: var(--surface);
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            display: none;
+        }
+
+        .level-note.show {
+            display: block;
+        }
+
+        .show-all-levels-toggle {
+            cursor: pointer;
+            color: var(--accent);
+            text-decoration: underline;
+            font-weight: 500;
+        }
+
+        .dimmed {
+            opacity: 0.45;
+            transition: opacity var(--transition);
+        }
+
+        .dimmed:hover {
+            opacity: 0.8;
+        }
+
+        /* ─── SECTION HEADINGS ─── */
+        section h2 {
+            font-family: 'Space Grotesk', sans-serif !important;
+            font-size: 42px !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.03em !important;
+            margin-bottom: 36px !important;
+            line-height: 1.1 !important;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            nav {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 12px 20px;
+                gap: 10px;
+            }
+
+            .nav-right {
+                flex-wrap: wrap;
+                gap: 6px;
+                justify-content: center;
+            }
+
+            .nav-tab {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            main {
+                margin-top: 120px;
+                padding: 24px 16px 60px;
+            }
+
+            .welcome-text {
+                font-size: 36px;
+            }
+
+            section h2 {
+                font-size: 32px !important;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .journal-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .language-tiles {
+                grid-template-columns: 1fr;
+            }
+
+            .quiz-multi-select {
+                grid-template-columns: 1fr;
+            }
+
+            .quiz-card {
+                margin: 16px;
+                padding: 32px 24px;
+            }
+        }
+
+        /* ─── COMPONENT OVERRIDES ─── */
+        .ex-input { width:200px; padding:8px 12px; border:1.5px solid var(--border); border-radius:var(--radius-sm); background:var(--surface); font-family:'Inter',sans-serif; font-size:14px; margin-right:8px; transition:border-color var(--transition); }
+        .ex-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-dim); }
+        .ex-btn { padding:8px 16px; background:transparent; border:1.5px solid var(--border); border-radius:var(--radius-pill); font-family:'Inter',sans-serif; cursor:pointer; font-size:13px; font-weight:500; transition:all var(--transition); }
+        .ex-btn:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-dim); }
+        .exercise-block { margin-top:20px; padding:20px; background:var(--surface); border-radius:var(--radius-sm); border-top:none; border:1px solid var(--border); }
+        .ex-q { font-size:14px; color:var(--text); margin-bottom:10px; margin-top:16px; font-family:'Inter',sans-serif; }
+        .conj-table { width:100%; border-collapse:separate; border-spacing:0; margin:14px 0; font-size:13px; border-radius:var(--radius-sm); overflow:hidden; border:1px solid var(--border); }
+        .conj-table th { background:var(--surface); font-weight:600; text-align:left; padding:10px 14px; border-bottom:1px solid var(--border); font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-mid); }
+        .conj-table td { padding:9px 14px; border-bottom:1px solid var(--border); font-family:'Space Grotesk',sans-serif; font-size:13px; }
+        .conj-table tr:last-child td { border-bottom:none; }
+        .conj-table tr:nth-child(even) td { background:var(--surface); }
+
+        .dialog-filters { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:20px; }
+        .dialog-card { background:var(--card); border:1px solid var(--border); margin-bottom:8px; border-radius:var(--radius); overflow:hidden; transition:all var(--transition); }
+        .dialog-card:hover { border-color:var(--accent); box-shadow:var(--shadow-sm); }
+        .dialog-card-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; cursor:pointer; gap:14px; transition:all var(--transition); }
+        .dialog-card-header:hover { border-left:3px solid var(--accent); padding-left:17px; }
+        .dialog-card-title { font-weight:600; font-size:1rem; flex:1; }
+        .dialog-level-tag { font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-light); background:var(--surface); padding:3px 8px; margin-right:6px; border-radius:var(--radius-pill); }
+        .dialog-cat-tag { font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); font-weight:500; }
+        .dialog-body { padding:24px 20px; background:var(--surface); border-top:1px solid var(--border); }
+        .dlg-line { display:flex; gap:16px; margin-bottom:16px; align-items:flex-start; }
+        .dlg-speaker { font-weight:700; font-size:11px; color:var(--accent); min-width:90px; text-transform:uppercase; letter-spacing:0.08em; padding-top:3px; }
+        .dlg-it { font-family:'Space Grotesk',sans-serif; font-size:14px; color:var(--text); margin-bottom:4px; font-weight:500; }
+        .dlg-en { font-size:12px; color:var(--text-mid); font-style:italic; }
+        .dlg-tool-btn { padding:6px 14px; border:1px solid var(--border); background:transparent; border-radius:var(--radius-pill); font-family:'Inter',sans-serif; font-size:11px; font-weight:500; cursor:pointer; margin-right:6px; margin-bottom:14px; text-transform:uppercase; letter-spacing:0.05em; transition:all var(--transition); }
+        .dlg-tool-btn:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-dim); }
+        .dialog-vocab-box { margin-top:18px; padding:14px 16px; background:var(--card); border:1px solid var(--border); font-size:13px; line-height:1.8; border-left:3px solid var(--accent); border-radius:0 var(--radius-sm) var(--radius-sm) 0; }
+        .dialog-toolbar { margin-bottom:10px; }
+        .progress-dot.started { background:var(--accent); opacity:0.4; }
+        .progress-dot.completed { background:var(--accent) !important; }
+
+        .resource-section { margin-bottom:32px; }
+        .resource-cat-title { font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:0.12em; color:var(--text-mid); margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+        .resource-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:10px; }
+        .resource-card { background:var(--card); border:1px solid var(--border); padding:18px; border-radius:var(--radius); transition:all var(--transition); }
+        .resource-card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:var(--shadow-sm); }
+        .resource-name { font-weight:600; font-size:14px; margin-bottom:8px; }
+        .resource-name a { color:var(--text); text-decoration:none; transition:color var(--transition); }
+        .resource-name a:hover { color:var(--accent); }
+        .resource-desc { font-size:12px; color:var(--text-mid); line-height:1.65; margin-bottom:10px; }
+        .resource-level { font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); background:var(--accent-dim); padding:3px 8px; border-radius:var(--radius-pill); font-weight:500; }
+        .resources-note { font-size:13px; color:var(--text-mid); margin-bottom:20px; padding:12px 16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); }
+
+        .lang-switcher { position:relative; }
+        #lang-badge { cursor:pointer; padding:5px 14px; border:1px solid var(--border); border-radius:var(--radius-pill); font-size:13px; font-weight:600; letter-spacing:0.05em; transition:all var(--transition); }
+        #lang-badge:hover { border-color:var(--accent); background:var(--accent-dim); }
+        #lang-dropdown { display:none; position:absolute; top:calc(100% + 8px); right:0; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); min-width:180px; z-index:200; box-shadow:var(--shadow-lg); overflow:hidden; }
+        #lang-dropdown.open { display:block; }
+        .lang-option { padding:12px 16px; font-size:13px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:background var(--transition); }
+        .lang-option:hover { background:var(--accent-dim); }
+        .lang-option.active { color:var(--accent); font-weight:600; }
+        .lang-option .lang-prog { font-size:11px; color:var(--text-light); }
+
+        /* ─── SCROLLBAR ─── */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+        /* ─── SELECTION ─── */
+        ::selection { background: var(--accent-glow); color: var(--text); }
+        </style>
+</head>
+<body>
+    <!-- Quiz Overlay -->
+    <div id="quizOverlay" class="quiz-container">
+        <div class="quiz-card">
+            <div class="quiz-progress" id="quizProgress"></div>
+            <div id="quizContent"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navigation" class="hidden">
+        <div class="nav-left">
+            <div class="nav-brand">MODUS MEUS</div>
+            <div class="language-badge" id="languageBadge">
+                <span id="currentLanguageEmoji">🇮🇹</span>
+                <span id="currentLanguageText">Italian</span>
+            </div>
+        </div>
+        <div class="nav-right">
+            <a class="nav-tab active" data-tab="dashboard">Dashboard</a>
+            <a class="nav-tab" data-tab="linguistics">Linguistics</a>
+            <a class="nav-tab" data-tab="grammar">Grammar</a>
+            <a class="nav-tab" data-tab="dialogs">Dialogs</a>
+            <a class="nav-tab" data-tab="resources">Resources</a>
+            <a class="nav-tab" data-tab="journal">Journal</a>
+        </div>
+    <div class="lang-switcher">
+                    <span id="lang-badge" onclick="document.getElementById('lang-dropdown').classList.toggle('open')">🇮🇹 IT</span>
+                    <div id="lang-dropdown">
+                        <div class="lang-option active" onclick="switchLanguage('italian')">🇮🇹 Italian <span class="lang-prog">active</span></div>
+                        <div class="lang-option" onclick="switchLanguage('french')">🇫🇷 French</div>
+                        <div class="lang-option" onclick="switchLanguage('catalan')">🏴 Catalan</div>
+                    </div>
+                </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="mainContent" class="hidden">
+        <!-- Dashboard Section -->
+        <section id="dashboardSection" class="tab-content">
+            <div class="welcome-section">
+                <div class="welcome-text" id="welcomeText">Ciao, User</div>
+                <div class="user-info">
+                    <div class="badge" id="levelBadge">C1-C2</div>
+                    <div id="goalChips"></div>
+                </div>
+            </div>
+
+            <div class="streak-counter">🔥 <span id="streakDays">0</span> giorni</div>
+
+            <div class="dashboard-grid" id="dashboardGrid"></div>
+
+            <div class="level-note" id="levelNote">
+                <strong>Showing content for C1-C2 level</strong> — <span class="show-all-levels-toggle" onclick="toggleAllLevels()">show all</span>
+            </div>
+        </section>
+
+        <!-- Linguistics Section -->
+        <section id="linguisticsSection" class="tab-content hidden">
+            <h2 style="margin-bottom: 30px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 28px;">Linguistica</h2>
+            <div id="linguisticsContent"></div>
+        </section>
+
+        <!-- Grammar Section -->
+        <section id="grammarSection" class="tab-content hidden">
+            <h2 style="margin-bottom: 30px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 28px;">Grammatica</h2>
+            <div id="grammarContent"></div>
+        </section>
+
+        <!-- Dialogs Section -->
+        <section id="dialogsSection" class="tab-content hidden">
+            <h2 style="margin-bottom: 30px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 28px;">Dialoghi</h2>
+            <div class="level-filter" id="levelFilter"></div>
+            <button class="practice-mode-btn">Practice Mode</button>
+            <div id="dialogsContent"></div>
+        </section>
+
+        <!-- Resources Section -->
+        <section id="resourcesSection" class="tab-content hidden">
+            <h2 style="margin-bottom: 30px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 28px;">Risorse</h2>
+            <div id="resourcesContent"></div>
+        </section>
+
+        <!-- Journal Section -->
+        <section id="journalSection" class="tab-content hidden">
+            <h2 style="margin-bottom: 30px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 28px;">Giornale</h2>
+            <div class="journal-layout">
+                <div class="journal-writing">
+                    <textarea class="journal-textarea" id="journalEntry" placeholder="Start writing..."></textarea>
+                    <div class="journal-controls">
+                        <span class="word-count">Words: <span id="wordCount">0</span></span>
+                        <button class="journal-save-btn">Save Entry</button>
+                    </div>
+                </div>
+                <div class="journal-sidebar">
+                    <div class="journal-prompt">
+                        <div class="journal-prompt-title" id="promptTitle">Today's Prompt</div>
+                        <div class="journal-prompt-text" id="promptText"></div>
+                    </div>
+                    <button class="random-prompt-btn">Random Prompt</button>
+                    <div class="category-filter-journal" id="categoryFilter"></div>
+                    <div class="past-entries">
+                        <div class="past-entries-title">Past Entries</div>
+                        <div id="pastEntriesList"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Global state
+        const state = {
+            name: '',
+            currentLanguage: 'italian',
+            currentLang: 'italian',
+            languages: {
+                italian: {
+                    selected: false,
+                    level: 'C1-C2',
+                    learningStyles: [],
+                    goals: [],
+                    resources: [],
+                    progress: {},
+                    journalEntries: []
+                },
+                french: {
+                    selected: false,
+                    level: 'A1-A2',
+                    learningStyles: [],
+                    goals: [],
+                    resources: [],
+                    progress: {},
+                    journalEntries: []
+                },
+                catalan: {
+                    selected: false,
+                    level: 'A1-A2',
+                    learningStyles: [],
+                    goals: [],
+                    resources: [],
+                    progress: {},
+                    journalEntries: []
+                }
+            },
+            streak: 0,
+            lastVisit: null,
+            quizComplete: false,
+            showAllLevels: false
+        };
+
+        const translations = {
+            italian: {
+                dashboard: 'Dashboard',
+                linguistics: 'Linguistica',
+                grammar: 'Grammatica',
+                dialogs: 'Dialoghi',
+                resources: 'Risorse',
+                journal: 'Giornale',
+                welcome: 'Ciao',
+                level: 'Livello',
+                goals: 'Obiettivi'
+            },
+            french: {
+                dashboard: 'Dashboard',
+                linguistics: 'Linguistique',
+                grammar: 'Grammaire',
+                dialogs: 'Dialogues',
+                resources: 'Ressources',
+                journal: 'Journal',
+                welcome: 'Bonjour',
+                level: 'Niveau',
+                goals: 'Objectifs'
+            },
+            catalan: {
+                dashboard: 'Dashboard',
+                linguistics: 'Lingüística',
+                grammar: 'Gramàtica',
+                dialogs: 'Diàlegs',
+                resources: 'Recursos',
+                journal: 'Diari',
+                welcome: 'Hola',
+                level: 'Nivell',
+                goals: 'Objectius'
+            }
+        };
+
+        // Quiz steps
+        const quizSteps = [
+            {
+                title: "What's your name?",
+                type: 'input',
+                key: 'name'
+            },
+            {
+                title: 'Which language are you learning?',
+                type: 'language-select',
+                options: [
+                    { label: 'Italian', emoji: '🇮🇹', value: 'italian' },
+                    { label: 'French', emoji: '🇫🇷', value: 'french' },
+                    { label: 'Catalan', emoji: '🇪🇸', value: 'catalan' },
+                    { label: 'Spanish', emoji: '🇪🇸', value: 'spanish', disabled: true },
+                    { label: 'Portuguese', emoji: '🇵🇹', value: 'portuguese', disabled: true },
+                    { label: 'German', emoji: '🇩🇪', value: 'german', disabled: true }
+                ]
+            },
+            {
+                title: "What's your current level?",
+                type: 'language-level',
+                options: [
+                    { label: 'A1–A2 Beginner', value: 'A1-A2' },
+                    { label: 'B1–B2 Intermediate', value: 'B1-B2' },
+                    { label: 'C1–C2 Advanced', value: 'C1-C2' },
+                    { label: 'Native / Polish', value: 'Native' }
+                ]
+            },
+            {
+                title: "What's your preferred learning style?",
+                type: 'multi-select',
+                options: [
+                    { emoji: '👂', label: 'Listening', value: 'listening' },
+                    { emoji: '📖', label: 'Reading', value: 'reading' },
+                    { emoji: '✍️', label: 'Writing', value: 'writing' },
+                    { emoji: '💬', label: 'Conversation', value: 'conversation' },
+                    { emoji: '🔤', label: 'Grammar', value: 'grammar' },
+                    { emoji: '🌊', label: 'Immersion', value: 'immersion' }
+                ]
+            },
+            {
+                title: 'What are your goals?',
+                type: 'multi-select',
+                options: [
+                    { label: 'Sound Native', value: 'sound-native' },
+                    { label: 'Travel', value: 'travel' },
+                    { label: 'Academic', value: 'academic' },
+                    { label: 'Professional', value: 'professional' },
+                    { label: 'Connect', value: 'connect' },
+                    { label: 'Literature', value: 'literature' }
+                ]
+            },
+            {
+                title: 'What resources have helped you?',
+                type: 'multi-select',
+                options: [
+                    { label: 'YouTube', value: 'youtube' },
+                    { label: 'Books', value: 'books' },
+                    { label: 'Apps', value: 'apps' },
+                    { label: 'Websites', value: 'websites' },
+                    { label: 'Podcasts', value: 'podcasts' },
+                    { label: 'Tutors', value: 'tutors' },
+                    { label: 'TV & Film', value: 'tv-film' },
+                    { label: 'Music', value: 'music' }
+                ]
+            }
+        ];
+
+        let currentQuizStep = 0;
+        let quizAnswers = {};
+
+        function renderQuizStep() {
+            const step = quizSteps[currentQuizStep];
+            const progressPercent = ((currentQuizStep + 1) / quizSteps.length) * 100;
+
+            let html = `<div class="quiz-progress" id="quizProgress" style="width: ${progressPercent}%"></div>
+                        <div class="quiz-title">${step.title}</div>`;
+
+            if (step.type === 'input') {
+                html += `<input type="text" class="quiz-input" id="quizInput" placeholder="Enter your name">`;
+            } else if (step.type === 'language-select') {
+                html += `<div class="language-tiles">`;
+                step.options.forEach(opt => {
+                    const selected = quizAnswers.language === opt.value ? ' selected' : '';
+                    const disabled = opt.disabled ? ' disabled' : '';
+                    html += `<div class="tile${selected}${disabled}" onclick="selectLanguage('${opt.value}')">
+                                <div class="tile-emoji">${opt.emoji}</div>
+                                <div>${opt.label}</div>
+                            </div>`;
+                });
+                html += `</div>`;
+            } else if (step.type === 'language-level') {
+                html += `<div class="language-tiles">`;
+                step.options.forEach(opt => {
+                    const selected = quizAnswers.level === opt.value ? ' selected' : '';
+                    html += `<div class="tile${selected}" style="grid-column: 1;" onclick="selectLevel('${opt.value}')">${opt.label}</div>`;
+                });
+                html += `</div>`;
+            } else if (step.type === 'multi-select') {
+                html += `<div class="quiz-multi-select">`;
+                step.options.forEach(opt => {
+                    const checked = (quizAnswers[step.title] || []).includes(opt.value) ? ' checked' : '';
+                    html += `<label class="checkbox-tile">
+                                <input type="checkbox" value="${opt.value}" ${checked} onchange="toggleMultiSelect('${step.title}', '${opt.value}')">
+                                ${opt.emoji ? opt.emoji + ' ' : ''}${opt.label}
+                            </label>`;
+                });
+                html += `</div>`;
+            }
+
+            html += `<div class="quiz-buttons">
+                        ${currentQuizStep > 0 ? `<button class="btn" onclick="previousQuizStep()">Back</button>` : ''}
+                        <button class="btn btn-primary" onclick="nextQuizStep()">
+                            ${currentQuizStep === quizSteps.length - 1 ? 'Start Learning' : 'Next'}
+                        </button>
+                    </div>`;
+
+            document.getElementById('quizContent').innerHTML = html;
+
+            if (step.type === 'input') {
+                document.getElementById('quizInput').focus();
+            }
+        }
+
+        function nextQuizStep() {
+            const step = quizSteps[currentQuizStep];
+
+            if (step.type === 'input') {
+                const value = document.getElementById('quizInput').value.trim();
+                if (!value) {
+                    alert('Please enter your name');
+                    return;
+                }
+                quizAnswers.name = value;
+                state.name = value;
+            } else if (step.type === 'language-select') {
+                if (!quizAnswers.language) {
+                    alert('Please select a language');
+                    return;
+                }
+            } else if (step.type === 'language-level') {
+                if (!quizAnswers.level) {
+                    alert('Please select a level');
+                    return;
+                }
+                state.languages[quizAnswers.language].level = quizAnswers.level;
+            }
+
+            if (currentQuizStep < quizSteps.length - 1) {
+                currentQuizStep++;
+                renderQuizStep();
+            } else {
+                completeQuiz();
+            }
+        }
+
+        function previousQuizStep() {
+            if (currentQuizStep > 0) {
+                currentQuizStep--;
+                renderQuizStep();
+            }
+        }
+
+        function selectLanguage(lang) {
+            quizAnswers.language = lang;
+            state.currentLanguage = lang;
+            state.currentLang = lang;
+            state.languages[lang].selected = true;
+            renderQuizStep();
+        }
+
+        function selectLevel(level) {
+            quizAnswers.level = level;
+            renderQuizStep();
+        }
+
+        function toggleMultiSelect(category, value) {
+            if (!quizAnswers[category]) {
+                quizAnswers[category] = [];
+            }
+            const idx = quizAnswers[category].indexOf(value);
+            if (idx > -1) {
+                quizAnswers[category].splice(idx, 1);
+            } else {
+                quizAnswers[category].push(value);
+            }
+        }
+
+        function completeQuiz() {
+            state.quizComplete = true;
+            state.languages[state.currentLanguage].learningStyles = quizAnswers["What\'s your preferred learning style?"] || [];
+            state.languages[state.currentLanguage].goals = quizAnswers["What are your goals?"] || [];
+            state.languages[state.currentLanguage].resources = quizAnswers["What resources have helped you?"] || [];
+
+            document.getElementById('quizOverlay').classList.add('hidden');
+            document.getElementById('navigation').classList.remove('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+
+            state.lastVisit = new Date();
+            state.streak = 1;
+
+            initializeDashboard();
+            setupEventListeners();
+        }
+
+        function toggleAllLevels() {
+            state.showAllLevels = !state.showAllLevels;
+            const note = document.getElementById('levelNote');
+            if (state.showAllLevels) {
+                note.textContent = 'Showing all levels';
+            } else {
+                note.innerHTML = '<strong>Showing content for C1-C2 level</strong> — <span class="show-all-levels-toggle" onclick="toggleAllLevels()">show all</span>';
+            }
+            renderLinguisticsContent();
+            renderGrammarContent();
+        }
+
+        function initializeDashboard() {
+            const name = state.name.split(' ')[0];
+            document.getElementById('welcomeText').textContent = `${translations[state.currentLanguage].welcome}, ${name}`;
+            document.getElementById('levelBadge').textContent = state.languages[state.currentLanguage].level;
+
+            const goalChips = state.languages[state.currentLanguage].goals.map(g => `<div class="badge">${g}</div>`).join('');
+            document.getElementById('goalChips').innerHTML = goalChips;
+
+            renderDashboardGrid();
+            renderLinguisticsContent();
+            renderGrammarContent();
+            renderDialogsContent();
+            renderResourcesContent();
+            renderJournalContent();
+        }
+
+        function renderDashboardGrid() {
+            const sections = [
+                { id: 1, title: 'LINGUISTICA', target: 'linguistics', num: '1' },
+                { id: 2, title: 'GRAMMATICA', target: 'grammar', num: '2' },
+                { id: 3, title: 'DIALOGHI', target: 'dialogs', num: '3' },
+                { id: 4, title: 'RISORSE', target: 'resources', num: '4' },
+                { id: 5, title: 'GIORNALE', target: 'journal', num: '5' },
+                { id: 6, title: 'PROGRESS', target: 'dashboard', num: '6' }
+            ];
+
+            const grid = sections.map(s => `
+                <div class="tile-card" onclick="switchTab('${s.target}')">
+                    <div class="tile-card-number">${s.num}</div>
+                    <div class="tile-card-title">${s.title}</div>
+                    <div class="tile-card-progress">0/0 done</div>
+                </div>
+            `).join('');
+
+            document.getElementById('dashboardGrid').innerHTML = grid;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(tabName + 'Section').classList.remove('hidden');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        }
+
+        function setupEventListeners() {
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    switchTab(e.target.dataset.tab);
+                });
+            });
+
+            document.getElementById('languageBadge').addEventListener('click', toggleLanguageSelector);
+        }
+
+        function toggleLanguageSelector() {
+            // Simplified for this version
+            alert('Language switching feature - implement dropdown with Italian/French/Catalan');
+        }
+
+        // Placeholder functions for content rendering
+        function renderLinguisticsContent() {
+            const content = getItalianLinguisticsContent();
+            document.getElementById('linguisticsContent').innerHTML = content;
+            setupExpandableRows();
+        }
+
+        function renderGrammarContent() {
+            const content = getItalianGrammarContent();
+            document.getElementById('grammarContent').innerHTML = content;
+            setupExpandableRows();
+        }
+
+        function renderDialogsContent() {
+            const content = getDialogsContent();
+            document.getElementById('dialogsContent').innerHTML = content;
+            setupDialogListeners();
+        }
+
+        function renderResourcesContent() {
+            const content = getResourcesContent();
+            document.getElementById('resourcesContent').innerHTML = content;
+        }
+
+        function renderJournalContent() {
+            const prompts = getJournalPrompts();
+            const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+            document.getElementById('promptText').textContent = randomPrompt.text;
+
+            document.getElementById('journalEntry').addEventListener('input', (e) => {
+                const words = e.target.value.trim().split(/\s+/).filter(w => w).length;
+                document.getElementById('wordCount').textContent = words;
+            });
+        }
+
+        function setupExpandableRows() {
+            document.querySelectorAll('.expandable-row').forEach(row => {
+                row.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    if (content && content.classList.contains('expandable-content')) {
+                        content.classList.toggle('open');
+                        this.querySelector('.arrow').classList.toggle('open');
+                    }
+                });
+            });
+        }
+
+        function setupDialogListeners() {
+            document.querySelectorAll('.dialog-scenario').forEach(scenario => {
+                scenario.addEventListener('click', function() {
+                    const content = this.querySelector('.dialog-content');
+                    content.classList.toggle('open');
+                });
+            });
+        }
+
+        // Content generation functions
+        function getItalianLinguisticsContent() {
+            const lang = state.currentLang;
+            const topics = {
+              italian: [
+                { id:'vowels', title:'Il Sistema Vocalico', tag:'Phonology', level:'B1', content:`
+<p><strong>Italian has 7 vowel phonemes</strong> in standard speech: /a/, /ɛ/ (open e), /e/ (closed e), /i/, /ɔ/ (open o), /o/ (closed o), /u/. Unlike English, they are <em>pure</em> — no diphthongs.</p>
+<div class="ipa-example">casa [ˈkaːsa] — house &nbsp;|&nbsp; vero [ˈvɛːro] — true &nbsp;|&nbsp; verde [ˈverde] — green<br>sole [ˈsoːle] — sun &nbsp;|&nbsp; dolce [ˈdoltʃe] — sweet &nbsp;|&nbsp; blu [blu] — blue</div>
+<p>English speakers diphthongize: "day" [deɪ] sounds wrong for Italian /e/. Hold the vowel still and release cleanly. Romans tend toward more open /ɛ/ and /ɔ/; northern Italians are closer. The open/closed distinction is lexically determined — there are no general rules, you learn by ear.</p>
+<div class="vocab-note">⚡ Biggest American interference: saying [oʊ] for /o/ (like "no") and [eɪ] for /e/ (like "they"). Italian /o/ = pure round, /e/ = pure front. Drill: <em>bello, pelo, pena, bene, tono, solo, dove, nome</em>.</div>` },
+
+                { id:'geminate', title:'Raddoppiamento Fonosintattico', tag:'Phonology', level:'C1', content:`
+<p><strong>Geminate (double) consonants are phonemically contrastive.</strong> The double consonant is held ~2× longer; the preceding vowel is shortened and more tense. This is the single most recognizable marker of a foreign accent.</p>
+<div class="ipa-example">nono [ˈnɔːno] ninth ≠ nonno [ˈnɔnno] grandfather<br>pala [ˈpaːla] shovel ≠ palla [ˈpalla] ball<br>caro [ˈkaːro] dear ≠ carro [ˈkarro] cart<br>tono [ˈtoːno] tone ≠ tonno [ˈtɔnno] tuna<br>note [ˈnoːte] notes ≠ notte [ˈnɔtte] night</div>
+<p><strong>Raddoppiamento sintattico</strong> — syntactic doubling across word boundaries. Monosyllables ending in a stressed vowel trigger phonetic doubling of the following consonant.</p>
+<div class="ipa-example">Triggers: è, che, qui, lì, su, giù, già, più, tre, ho, ha, do, fa, so, sta, va, a (prep)<br><br>è bello → [ɛbˈbɛllo] &nbsp;|&nbsp; a casa → [akˈkaːsa] &nbsp;|&nbsp; tre cani → [trɛkˈkaːni]<br>più tardi → [pjuʦˈtardi] &nbsp;|&nbsp; chi sa → [kiˈssa] &nbsp;|&nbsp; ho fatto → [ɔfˈfatto]</div>
+<div class="vocab-note">⚡ This is why native speakers run words together in ways that seem unpredictable. Once you internalize the trigger list, you'll hear it everywhere.</div>` },
+
+                { id:'assimilation', title:'Assimilazione e Discorso Connesso', tag:'Phonology', level:'C1', content:`
+<p><strong>Place assimilation:</strong> /n/ assimilates to the place of articulation of the following consonant in fast, natural speech.</p>
+<div class="ipa-example">Before labials (/p/, /b/, /m/): /n/ → [m]<br>in bocca → [imˈbɔkka] &nbsp;|&nbsp; un po' → [umˈpɔ] &nbsp;|&nbsp; in piazza → [imˈpjattsa] &nbsp;|&nbsp; in mente → [imˈmɛnte]<br><br>Before velars (/k/, /g/): /n/ → [ŋ]<br>un cane → [uŋˈkaːne] &nbsp;|&nbsp; un gatto → [uŋˈgatto] &nbsp;|&nbsp; in gamba → [iŋˈgamba]</div>
+<p><strong>Elision:</strong> vowel deleted before vowel-initial word. <em>l'amico, dell'uva, quell'uomo, un'ora</em>. Also informal: <em>m'hai detto, t'ho chiamato, s'è rotto</em>.</p>
+<p><strong>Troncamento (apocope):</strong> final vowel/syllable drops after l, r, n, m before a consonant. <em>buon giorno, gran bel posto, San Pietro, bel ragazzo, suor Maria</em>.</p>
+<div class="vocab-note">⚡ These aren't lazy speech — they're obligatory phonological rules in natural Italian. Applying them makes you sound native; ignoring them sounds formal or foreign.</div>` },
+
+                { id:'rhythm', title:'Ritmo e Intonazione', tag:'Phonology', level:'B1', content:`
+<p><strong>Italian is syllable-timed:</strong> all syllables get roughly equal duration. English is stress-timed (unstressed syllables are compressed). This creates Italian's "musical" quality — the even pulse you hear.</p>
+<p><strong>Intonation patterns:</strong></p>
+<div class="ipa-example">Statements: falling contour at end — "Ho mangiato la pizza" ↘<br>Yes/No questions: gentle rise on the final word only — "Hai mangiato?" ↗<br>Lists: mid-rise on each item, fall on last — "pane↗, pasta↗, vino↘"<br>Contrast emphasis: "L'HO fatto IO" — stressed items get full vowels, pitch boost</div>
+<p>Unlike English, Italian doesn't reduce unstressed vowels to schwa. Every syllable stays clear. Say "politica" with four equal syllables: po-LI-ti-ca.</p>
+<div class="vocab-note">⚡ Geopop videos are excellent for intonation modeling — educated Roman Italian at natural pace. SKAM Italia for youth/colloquial register.</div>` },
+
+                { id:'verb-morphology', title:'Morfologia Verbale', tag:'Morphology', level:'A2', content:`
+<p><strong>Three conjugation classes:</strong> -ARE (mangiare), -ERE (leggere), -IRE (partire). Endings encode person + number + tense + mood. Italian is <strong>pro-drop</strong> — subject pronouns usually omitted because the ending disambiguates.</p>
+<div class="ipa-example">mangio = I eat &nbsp;|&nbsp; mangi = you eat &nbsp;|&nbsp; mangia = he/she eats<br>mangiamo = we eat &nbsp;|&nbsp; mangiate = you (pl) eat &nbsp;|&nbsp; mangiano = they eat</div>
+<p><strong>Past participle formation:</strong> -ARE → -ato (parlato), -ERE → -uto (venduto), -IRE → -ito (partito).<br>Key irregulars: fatto, detto, scritto, letto, visto, aperto, messo, preso, venuto, stato, potuto, dovuto, voluto, chiesto, risposto, rimasto, nato, morto, offerto.</p>
+<p><strong>Key irregular stems:</strong> essere (sono/sei/è/siamo/siete/sono), avere (ho/hai/ha/abbiamo/avete/hanno), andare (vado/vai/va/andiamo/andate/vanno), fare (faccio/fai/fa/facciamo/fate/fanno), dire (dico/dici/dice/diciamo/dite/dicono), venire (vengo/vieni/viene/veniamo/venite/vengono), uscire (esco/esci/esce/usciamo/uscite/escono).</p>` },
+
+                { id:'noun-morphology', title:'Morfologia Nominale e Genere', tag:'Morphology', level:'A2', content:`
+<p><strong>Gender assignment:</strong> -o = usually masculine, -a = usually feminine, -e = either. Exceptions are common: <em>il problema, il tema, il clima, il poeta</em> (masc. in -a); <em>la radio, la mano, la foto, la moto</em> (fem. in -o).</p>
+<div class="ipa-example">Plural: -o → -i (libro/libri), -a → -e (porta/porte), -e → -i (stazione/stazioni, cane/cani)<br>Irregular: l'uomo → gli uomini, la mano → le mani, il bue → i buoi, l'uovo → le uova</div>
+<p><strong>Suffixes:</strong> -ino/ina (small/cute: cagnino, casina), -one/ona (big: macchinone, stanzone), -etto/etta (diminutive nice: casetta, ragazzetto), -accio/accia (pejorative: tempaccio, parolaccia).</p>
+<p><strong>Invariable nouns:</strong> nouns ending in accented vowel (città, caffè, università), foreign loanwords (lo sport, il film, la chat), nouns ending in consonant (il bar, il tram).</p>` },
+
+                { id:'syntax', title:'La Sintassi Italiana', tag:'Syntax', level:'B2', content:`
+<p><strong>Default word order is SVO</strong> — but flexibility is much greater than English thanks to morphological marking. Information structure drives word order, not grammar.</p>
+<p><strong>Topicalization (left dislocation):</strong> move a constituent to the front with a resumptive clitic.<br><em>Il libro, l'ho già letto.</em> (The book, I've already read it.)<br><em>A Marco, gli ho parlato ieri.</em> (Marco, I spoke to him yesterday.)</p>
+<p><strong>Clitic placement:</strong> preverbal with finite verbs (Lo vedo), postverbal/attached with infinitives (Voglio vederlo), imperative (Guardalo!), gerund (Vedendolo). <strong>Clitic climbing:</strong> Lo voglio vedere (clitic climbs from embedded infinitive to modal).</p>
+<div class="ipa-example">NE — replaces di+NP or partitive quantity: "Quanti ne vuoi?" "Ne voglio tre." Also origin: "Vengo da Roma" → "Ne vengo."<br>CI — replaces a+NP (location/direction): "Vai a Roma?" "Sì, ci vado." Also idiomatic: "Ci vuole pazienza." "Ci tengo."</div>` },
+
+                { id:'congiuntivo', title:'Il Congiuntivo — Quando e Perché', tag:'Syntax', level:'C1', content:`
+<p><strong>The Italian subjunctive is alive</strong> in educated speech and writing. It is NOT dying despite what some say. Key triggers:</p>
+<div class="ipa-example">Volitional: voglio che tu venga, preferisco che stia a casa, è necessario che parta<br>Epistemic (doubt/belief): penso che sia vero, dubito che venga, non so se abbia capito<br>Impersonal: è importante che tu sappia, bisogna che parliamo, sembra che piova<br>Concessive: benché sia stanco, sebbene non capisca, nonostante faccia freddo, per quanto cerchi<br>Temporal (future ref.): prima che tu vada, finché non arrivi, nel caso in cui venga<br>Purpose: affinché capiscano, perché tu possa studiare meglio<br>Conditional: a meno che non piova, purché tu venga, a condizione che paghi<br>Free relatives: chiunque venga, qualunque cosa dica, dovunque vada</div>
+<div class="vocab-note">⚡ After "come se" always use subjunctive: "Parla come se sapesse tutto." After "magari" = congiuntivo trapassato for remote wishes: "Magari fossi ricco!"</div>` }
+              ],
+              french: [
+                { id:'fr-vowels', title:'Le Système Vocalique', tag:'Phonologie', level:'A2', content:`
+<p><strong>French has 16 vowels</strong> including 4 nasal vowels. Front rounded vowels /y/, /ø/, /œ/ don't exist in English — pronounce /i/ with rounded lips for /y/ (tu, lune, vu).</p>
+<div class="ipa-example">Nasal vowels: /ɛ̃/ fin, /ɑ̃/ blanc, /ɔ̃/ bon, /œ̃/ brun (merging with /ɛ̃/ in many speakers)<br>The schwa /ə/ is unstable — dropped in casual speech: "je ne sais pas" → "j'sais pas"<br>Key pairs: dessus/dessous [dəsy/dəsu] above/below &nbsp;|&nbsp; beau/bol [bo/bɔl]</div>
+<div class="vocab-note">⚡ For /y/ (tu): say [i] then round your lips without moving your tongue. For /ø/ (feu): say [e] then round lips. These are the two most characteristic French sounds.</div>` },
+                { id:'fr-liaison', title:'La Liaison et l\'Élision', tag:'Phonologie', level:'A2', content:`
+<p><strong>Liaison:</strong> normally silent final consonant is pronounced before a vowel-initial word. Three types: obligatory, forbidden, optional.</p>
+<div class="ipa-example">Obligatory: les enfants [lezɑ̃fɑ̃], nous avons [nuzavɔ̃], ils ont [ilzɔ̃], très utile [trɛzytil]<br>Forbidden: after "et" (et / il, never linked), after singular noun (un chat / énorme), after "comment" in questions<br>Liaison consonants: s/x → [z], d → [t], f → [v] (neuf ans → [nœvɑ̃])</div>
+<p><strong>Élision:</strong> le→l', la→l', je→j', me→m', se→s', de→d', que→qu', ce→c' before vowels.<br><strong>Enchaînement:</strong> final pronounced consonant links to next vowel. "avec elle" → [avɛkɛl].</p>` },
+                { id:'fr-rhythm', title:'Rythme et Accent', tag:'Phonologie', level:'B1', content:`
+<p><strong>French stress is fixed on the LAST syllable of a rhythm group</strong> (not the word). "Je parle français" → stress on -ÇAIS. Rhythm groups are sense-units.</p>
+<p>No pitch accent, no tones. French is syllable-timed. Consonants belong to the FOLLOWING syllable: "une amie" → /y.na.mi/.</p>
+<div class="ipa-example">Yes/no questions: rise on last syllable, or inversion (formel), or est-ce que (neutre)<br>"T'as mangé?" (intonation) = "Est-ce que tu as mangé?" = "As-tu mangé?" (formel)</div>` }
+              ],
+              catalan: [
+                { id:'ca-vowels', title:'El Sistema Vocàlic', tag:'Fonologia', level:'A2', content:`
+<p><strong>Eastern Catalan vowel reduction:</strong> unstressed /a/ and /e/ → schwa [ə]; unstressed /o/ and /u/ → [u]. "casa" → [ˈkazə], "porto" → [ˈpurtu]. Western Catalan (Valencia, Lleida) does NOT reduce — more open and clear.</p>
+<div class="ipa-example">7 stressed vowels: /a, ɛ, e, i, ɔ, o, u/ — similar to Italian<br>Schwa [ə] appears ONLY in unstressed position in Eastern dialects<br>patata [pəˈtatə] &nbsp;|&nbsp; pedra [ˈpɛðɾə] &nbsp;|&nbsp; porta [ˈpɔɾtə]</div>` },
+                { id:'ca-consonants', title:'Fenòmens Consonàntics', tag:'Fonologia', level:'B1', content:`
+<p><strong>Final obstruent devoicing:</strong> final /b,d,g,v,z/ → [p,t,k,f,s]. "Fred" (cold) → [frɛt], "llarg" (long) → [ʎark].</p>
+<div class="ipa-example">L·L (ela geminada): long /ll/ geminate — col·legi [kɔlˈleʒi], il·lusió [illuziˈo]<br>NY = /ɲ/ (like Italian GN): any [ˈaɲ] year, Catalunya [kətəˈluɲə]<br>TX/TG = /tʃ/: metge [ˈmedʒə] doctor, cotxe [ˈkɔtʃə] car<br>V and B: merged — both [b]/[β] in most dialects</div>` }
+              ]
+            };
+            const langTopics = topics[lang] || topics.italian;
+            return langTopics.map(t => `
+                <div class="expandable-row" data-level="${t.level}" onclick="toggleExpand(this)">
+                    <div class="expandable-row-header">
+                        <span class="expandable-row-title">${t.title}</span>
+                        <div class="expandable-row-meta">
+                            <span class="progress-dot" id="dot-${t.id}"></span>
+                            <span class="tag">${t.tag}</span>
+                            <span style="font-size:11px;color:var(--text-light)">${t.level}</span>
+                            <span class="arrow">→</span>
+                        </div>
+                    </div>
+                    <div class="expandable-content">${t.content}</div>
+                </div>`).join('');
+        }
+
+        
+        function getItalianGrammarContent() {
+            const lang = state.currentLang;
+            const topics = {
+              italian: [
+                { id:'articles', title:'GLI ARTICOLI', tag:'A1', level:'A1', content:`
+<p><strong>Definite articles ("the"):</strong></p>
+<table class="conj-table"><tr><th></th><th>M Sg</th><th>F Sg</th><th>M Pl</th><th>F Pl</th></tr>
+<tr><td>Before consonant</td><td>il</td><td>la</td><td>i</td><td>le</td></tr>
+<tr><td>Before vowel</td><td>l'</td><td>l'</td><td>gli</td><td>le</td></tr>
+<tr><td>Before s+cons, z, gn, ps, x, y</td><td>lo</td><td>la</td><td>gli</td><td>le</td></tr></table>
+<p style="margin-top:12px"><strong>Indefinite articles ("a/an"):</strong> un (m, before consonant or vowel), uno (m, before s+cons/z/gn/ps/x/y), una (f, before consonant), un' (f, before vowel).</p>
+<p><strong>Partitive articles ("some/any"):</strong> del/dello/dell'/della/dei/degli/delle — combine di + definite article.</p>
+<div class="ipa-example">il libro, lo studente, l'amico, la casa, i libri, gli studenti, le case<br>un libro, uno studente, un'amica, una casa<br>del pane, dello zucchero, dell'acqua, della pasta, dei biscotti</div>
+<div class="exercise-block">
+  <div class="ex-q">___ studente arriva domani.</div>
+  <input class="ex-input" placeholder="article"> <button class="ex-btn" onclick="chk(this,'Lo')">✓</button>
+  <div class="ex-q">Ho comprato ___ uova al mercato.</div>
+  <input class="ex-input" placeholder="article"> <button class="ex-btn" onclick="chk(this,'delle')">✓</button>
+  <div class="ex-q">Parla con ___ amiche di Marco.</div>
+  <input class="ex-input" placeholder="article"> <button class="ex-btn" onclick="chk(this,'le')">✓</button>
+</div>` },
+
+                { id:'pres', title:'PRESENTE INDICATIVO', tag:'A1', level:'A1', content:`
+<table class="conj-table"><tr><th></th><th>-ARE parlare</th><th>-ERE leggere</th><th>-IRE partire</th><th>-IRE (isc) capire</th></tr>
+<tr><td>io</td><td>parlo</td><td>leggo</td><td>parto</td><td>capisco</td></tr>
+<tr><td>tu</td><td>parli</td><td>leggi</td><td>parti</td><td>capisci</td></tr>
+<tr><td>lui/lei</td><td>parla</td><td>legge</td><td>parte</td><td>capisce</td></tr>
+<tr><td>noi</td><td>parliamo</td><td>leggiamo</td><td>partiamo</td><td>capiamo</td></tr>
+<tr><td>voi</td><td>parlate</td><td>leggete</td><td>partite</td><td>capite</td></tr>
+<tr><td>loro</td><td>parlano</td><td>leggono</td><td>partono</td><td>capiscono</td></tr></table>
+<p style="margin-top:12px"><strong>Key irregulars:</strong> essere (sono/sei/è/siamo/siete/sono), avere (ho/hai/ha/abbiamo/avete/hanno), andare (vado/vai/va/andiamo/andate/vanno), fare (faccio/fai/fa/facciamo/fate/fanno), dire (dico/dici/dice/diciamo/dite/dicono), venire (vengo/vieni/viene/veniamo/venite/vengono), uscire (esco/esci/esce/usciamo/uscite/escono), sapere (so/sai/sa/sappiamo/sapete/sanno).</p>
+<div class="exercise-block">
+  <div class="ex-q">Non (loro — capire) ___ l'italiano.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'capiscono')">✓</button>
+  <div class="ex-q">(Io — sapere) ___ dov'è, ma non te lo dico.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'so')">✓</button>
+</div>` },
+
+                { id:'pp', title:'PASSATO PROSSIMO', tag:'A2', level:'A2', content:`
+<p><strong>Formation:</strong> auxiliary (avere or essere) in presente + past participle.</p>
+<p><strong>ESSERE auxiliary</strong> = intransitive verbs of motion/change of state + reflexives. Past participle <em>agrees</em> with subject in gender/number.</p>
+<div class="ipa-example">Verbs taking essere: andare, venire, partire, arrivare, uscire, entrare, tornare, restare, rimanere, cadere, nascere, morire, diventare, essere, stare, sembrare, succedere, piacere, and ALL reflexives.</div>
+<p><strong>AVERE auxiliary</strong> = all transitive verbs + many intransitive. Past participle is invariable (unless direct object pronoun precedes).</p>
+<div class="ipa-example">Ho mangiato la pizza. &nbsp;|&nbsp; Sono andato a Roma. &nbsp;|&nbsp; Si è svegliata tardi.<br>La pizza che ho mangiato era buonissima. (no agreement needed)<br>La pizza? L'ho mangiata ieri. (pronoun precedes → agreement)</div>
+<div class="exercise-block">
+  <div class="ex-q">Ieri sera (noi — mangiare) ___ la pizza insieme.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'abbiamo mangiato')">✓</button>
+  <div class="ex-q">Mia madre (partire) ___ stamattina per Roma.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'è partita')">✓</button>
+</div>` },
+
+                { id:'imp', title:'IMPERFETTO', tag:'A2', level:'A2', content:`
+<table class="conj-table"><tr><th></th><th>-ARE parlare</th><th>-ERE leggere</th><th>-IRE partire</th></tr>
+<tr><td>io</td><td>parlavo</td><td>leggevo</td><td>partivo</td></tr>
+<tr><td>tu</td><td>parlavi</td><td>leggevi</td><td>partivi</td></tr>
+<tr><td>lui/lei</td><td>parlava</td><td>leggeva</td><td>partiva</td></tr>
+<tr><td>noi</td><td>parlavamo</td><td>leggevamo</td><td>partivamo</td></tr>
+<tr><td>voi</td><td>parlavate</td><td>leggevate</td><td>partivate</td></tr>
+<tr><td>loro</td><td>parlavano</td><td>leggevano</td><td>partivano</td></tr></table>
+<p style="margin-top:12px"><strong>Uses:</strong> habitual/repeated past action (ero sempre in ritardo), background descriptions, ongoing action interrupted by passato prossimo, mental/physical states in the past.</p>
+<p><strong>Irregulars:</strong> essere (ero/eri/era/eravamo/eravate/erano), fare (facevo...), dire (dicevo...), bere (bevevo...), tradurre (traducevo...).</p>
+<div class="exercise-block">
+  <div class="ex-q">Quando ero piccolo, (giocare) ___ sempre a calcio.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'giocavo')">✓</button>
+  <div class="ex-q">Mentre (io — studiare) ___, lui guardava la TV.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'studiavo')">✓</button>
+</div>` },
+
+                { id:'fut', title:'FUTURO SEMPLICE', tag:'B1', level:'B1', content:`
+<p>All verbs use the same endings: -ò/-ai/-à/-emo/-ete/-anno. Stem = infinitive minus final -e (for -ARE: also -a→-e in stem).</p>
+<div class="ipa-example">parlare → parlerò, parlerai, parlerà, parleremo, parlerete, parleranno<br>leggere → leggerò, leggerai...<br>partire → partirò, partirai...</div>
+<p><strong>Irregular stems:</strong> andare→andr-, avere→avr-, dovere→dovr-, potere→potr-, venire→verr-, volere→vorr-, tenere→terr-, rimanere→rimarr-, bere→berr-, essere→sar-, fare→far-, dare→dar-, stare→star-, dire→dir-.</p>
+<p><strong>Uses:</strong> future events, BUT also epistemic use for probability/guessing: "Saranno le tre" (it must be about three), "Avrà trent'anni" (he must be about thirty), "Dove sarà finito?" (where could he have gotten to?).</p>
+<div class="exercise-block">
+  <div class="ex-q">Non so dove sia — (essere) ___ in ufficio.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'sarà')">✓</button>
+  <div class="ex-q">Se ho tempo, (venire) ___ alla festa.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'verrò')">✓</button>
+</div>` },
+
+                { id:'cond', title:'CONDIZIONALE PRESENTE', tag:'B1', level:'B1', content:`
+<p>Same irregular stems as futuro + endings: -ei/-esti/-ebbe/-emmo/-este/-ebbero.</p>
+<div class="ipa-example">vorrei, vorresti, vorrebbe, vorremmo, vorreste, vorrebbero<br>sarei, saresti, sarebbe, saremmo, sareste, sarebbero</div>
+<p><strong>Uses:</strong> polite requests (Vorrei un caffè, Potrebbe aiutarmi?), hypothetical present/future (Lo farei volentieri), reported future from past (Disse che sarebbe venuto), suggestions (Dovresti riposare).</p>
+<div class="exercise-block">
+  <div class="ex-q">(Tu — volere) ___ un altro caffè?</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'Vorresti')">✓</button>
+  <div class="ex-q">Con più tempo, (io — fare) ___ un viaggio in Giappone.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'farei')">✓</button>
+</div>` },
+
+                { id:'condpass', title:'CONDIZIONALE PASSATO', tag:'B2', level:'B2', content:`
+<p><strong>Formation:</strong> essere/avere in condizionale + past participle.</p>
+<div class="ipa-example">avrei parlato, saresti andato/a, avrebbe fatto, saremmo partiti/e, sareste rimasti/e, avrebbero detto</div>
+<p><strong>Uses:</strong> unrealized past conditions (Sarei venuto, ma avevo la febbre), future-in-the-past (Sapevo che sarebbe arrivato tardi), reported speech (Ha detto che avrebbe chiamato).</p>
+<div class="exercise-block">
+  <div class="ex-q">Se avessi saputo, (venire) ___.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'sarei venuto')">✓</button>
+</div>` },
+
+                { id:'congiunt', title:'CONGIUNTIVO PRESENTE', tag:'C1', level:'C1', content:`
+<table class="conj-table"><tr><th></th><th>-ARE parlare</th><th>-ERE leggere</th><th>-IRE capire</th><th>essere</th><th>avere</th></tr>
+<tr><td>io/tu/lui</td><td>parli</td><td>legga</td><td>capisca</td><td>sia</td><td>abbia</td></tr>
+<tr><td>noi</td><td>parliamo</td><td>leggiamo</td><td>capiamo</td><td>siamo</td><td>abbiamo</td></tr>
+<tr><td>voi</td><td>parliate</td><td>leggiate</td><td>capiate</td><td>siate</td><td>abbiate</td></tr>
+<tr><td>loro</td><td>parlino</td><td>leggano</td><td>capiscano</td><td>siano</td><td>abbiano</td></tr></table>
+<p style="margin-top:12px"><strong>Key irregulars:</strong> fare→faccia, dare→dia, stare→stia, andare→vada, venire→venga, potere→possa, volere→voglia, sapere→sappia, dovere→debba, dire→dica, uscire→esca.</p>
+<div class="exercise-block">
+  <div class="ex-q">Penso che lui (avere) ___ ragione.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'abbia')">✓</button>
+  <div class="ex-q">È importante che tu (sapere) ___ la verità.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'sappia')">✓</button>
+</div>` },
+
+                { id:'congimp', title:'CONGIUNTIVO IMPERFETTO', tag:'C1', level:'C1', content:`
+<table class="conj-table"><tr><th></th><th>-ARE</th><th>-ERE</th><th>-IRE</th><th>essere</th></tr>
+<tr><td>io/tu</td><td>parlassi</td><td>leggessi</td><td>partissi</td><td>fossi</td></tr>
+<tr><td>lui/lei</td><td>parlasse</td><td>leggesse</td><td>partisse</td><td>fosse</td></tr>
+<tr><td>noi</td><td>parlassimo</td><td>leggessimo</td><td>partissimo</td><td>fossimo</td></tr>
+<tr><td>voi</td><td>parlaste</td><td>leggeste</td><td>partiste</td><td>foste</td></tr>
+<tr><td>loro</td><td>parlassero</td><td>leggessero</td><td>partissero</td><td>fossero</td></tr></table>
+<p style="margin-top:12px"><strong>Uses:</strong> Type 2 conditional (se + congiuntivo imperfetto → condizionale presente), after past-tense verbs with subjunctive triggers, after "come se".</p>
+<div class="exercise-block">
+  <div class="ex-q">Se (avere) ___ più soldi, viaggerei di più.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'avessi')">✓</button>
+  <div class="ex-q">Parlava come se (sapere) ___ tutto.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'sapesse')">✓</button>
+</div>` },
+
+                { id:'imperativo', title:'IMPERATIVO', tag:'B1', level:'B1', content:`
+<table class="conj-table"><tr><th></th><th>-ARE parlare</th><th>-ERE leggere</th><th>-IRE partire</th></tr>
+<tr><td>tu</td><td>parla!</td><td>leggi!</td><td>parti!</td></tr>
+<tr><td>Lei (formal)</td><td>parli!</td><td>legga!</td><td>parta!</td></tr>
+<tr><td>noi</td><td>parliamo!</td><td>leggiamo!</td><td>partiamo!</td></tr>
+<tr><td>voi</td><td>parlate!</td><td>leggete!</td><td>partite!</td></tr></table>
+<p style="margin-top:12px"><strong>Irregular tu forms:</strong> va'/vai, fa'/fai, da'/dai, sta'/stai, di' (from andare, fare, dare, stare, dire).</p>
+<p><strong>Negative tu:</strong> non + infinitive: "Non farlo!", "Non andare!", "Non dire niente!"</p>
+<p><strong>Clitics attach to affirmative imperativo</strong> (except Lei): Parlami! Fallo! Diglielo! — with monosyllabic forms, consonant doubles: fa' → fallo, di' → dillo.</p>
+<div class="exercise-block">
+  <div class="ex-q">(Tu — aspettare) ___ un momento!</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'Aspetta')">✓</button>
+  <div class="ex-q">(Lei — venire) ___ pure, si accomodi!</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'Venga')">✓</button>
+</div>` },
+
+                { id:'pronouns', title:'I PRONOMI', tag:'B1', level:'B1', content:`
+<p><strong>Subject pronouns (pro-drop — usually omit):</strong> io, tu, lui/lei, noi, voi, loro. Use for emphasis/contrast: "L'ho fatto IO, non lui."</p>
+<p><strong>Direct object:</strong> mi, ti, lo/la, ci, vi, li/le — preverbal with finite verbs, suffixed with infinitives.</p>
+<p><strong>Indirect object:</strong> mi, ti, gli/le, ci, vi, gli (loro) — "Gli parlo" (I speak to him/her), "Le mando un messaggio."</p>
+<p><strong>Combined pronouns:</strong></p>
+<table class="conj-table"><tr><th></th><th>lo</th><th>la</th><th>li</th><th>le</th><th>ne</th></tr>
+<tr><td>mi</td><td>me lo</td><td>me la</td><td>me li</td><td>me le</td><td>me ne</td></tr>
+<tr><td>ti</td><td>te lo</td><td>te la</td><td>te li</td><td>te le</td><td>te ne</td></tr>
+<tr><td>gli/le</td><td>glielo</td><td>gliela</td><td>glieli</td><td>gliele</td><td>gliene</td></tr>
+<tr><td>ci</td><td>ce lo</td><td>ce la</td><td>ce li</td><td>ce le</td><td>ce ne</td></tr>
+<tr><td>vi</td><td>ve lo</td><td>ve la</td><td>ve li</td><td>ve le</td><td>ve ne</td></tr></table>
+<div class="exercise-block">
+  <div class="ex-q">Ho visto Marco ieri → ___ ho visto ieri.</div>
+  <input class="ex-input" placeholder="pronoun"> <button class="ex-btn" onclick="chk(this,'L\'')">✓</button>
+  <div class="ex-q">Puoi darmi il libro? → Puoi ___?</div>
+  <input class="ex-input" placeholder="darmelo etc"> <button class="ex-btn" onclick="chk(this,'darmelo')">✓</button>
+</div>` },
+
+                { id:'prep', title:'LE PREPOSIZIONI', tag:'B1', level:'B1', content:`
+<p><strong>Articulated prepositions (di/a/da/in/su + article):</strong></p>
+<table class="conj-table"><tr><th></th><th>il</th><th>lo</th><th>l'</th><th>la</th><th>i</th><th>gli</th><th>le</th></tr>
+<tr><td>di</td><td>del</td><td>dello</td><td>dell'</td><td>della</td><td>dei</td><td>degli</td><td>delle</td></tr>
+<tr><td>a</td><td>al</td><td>allo</td><td>all'</td><td>alla</td><td>ai</td><td>agli</td><td>alle</td></tr>
+<tr><td>da</td><td>dal</td><td>dallo</td><td>dall'</td><td>dalla</td><td>dai</td><td>dagli</td><td>dalle</td></tr>
+<tr><td>in</td><td>nel</td><td>nello</td><td>nell'</td><td>nella</td><td>nei</td><td>negli</td><td>nelle</td></tr>
+<tr><td>su</td><td>sul</td><td>sullo</td><td>sull'</td><td>sulla</td><td>sui</td><td>sugli</td><td>sulle</td></tr></table>
+<p style="margin-top:12px"><strong>Key uses — A:</strong> destination (Vado a Roma), time (alle otto, a Natale), manner (a piedi, a voce alta).<br><strong>DI:</strong> possession (la macchina di Marco), origin (sono di Roma), comparison (più bello di te).<br><strong>DA:</strong> origin-from (vengo da Roma), duration (da tre anni — ongoing!), at someone's place (dal medico, da Maria), passive agent (scritto da Calvino).<br><strong>IN:</strong> location with large places (in Italia, in ufficio, in camera), transport (in macchina, in aereo), time periods (in estate, in tre ore).</p>` },
+
+                { id:'discorso', title:'DISCORSO INDIRETTO', tag:'B2', level:'B2', content:`
+<p><strong>Converting direct → indirect speech:</strong></p>
+<p>1. Pronoun shifts: 1st/2nd person → 3rd person (io→lui/lei, tu→lui/lei, noi→loro)</p>
+<p>2. Time/place expressions shift:</p>
+<div class="ipa-example">ieri → il giorno prima &nbsp;|&nbsp; oggi → quel giorno &nbsp;|&nbsp; domani → l'indomani / il giorno dopo<br>qui/qua → lì/là &nbsp;|&nbsp; questo → quello &nbsp;|&nbsp; ora → allora</div>
+<p>3. Tense shifts with PAST reporting verb:</p>
+<table class="conj-table"><tr><th>Direct</th><th>Indirect</th></tr>
+<tr><td>presente</td><td>imperfetto (or presente)</td></tr>
+<tr><td>passato prossimo</td><td>trapassato prossimo</td></tr>
+<tr><td>futuro semplice</td><td>condizionale presente</td></tr>
+<tr><td>imperativo</td><td>di + infinito</td></tr>
+<tr><td>imperfetto</td><td>imperfetto (unchanged)</td></tr></table>
+<p style="margin-top:12px">Reporting questions: YES/NO → se: "Viene?" → Ha chiesto se venivo.<br>Open questions → keep interrogative: "Dove vai?" → Ha chiesto dove andassi.</p>
+<div class="exercise-block">
+  <div class="ex-q">"Vengo domani." → Ha detto che ___ l'indomani.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'veniva')">✓</button>
+</div>` },
+
+                { id:'periodo', title:'PERIODO IPOTETICO', tag:'C1', level:'C1', content:`
+<table class="conj-table"><tr><th>Type</th><th>SE clause</th><th>Result clause</th><th>Meaning</th></tr>
+<tr><td>1 — Reale</td><td>se + presente</td><td>presente / futuro</td><td>real/likely: Se piove, resto a casa.</td></tr>
+<tr><td>2 — Possibile</td><td>se + cong. imperfetto</td><td>condizionale presente</td><td>hypothetical: Se avessi una macchina, andrei al mare.</td></tr>
+<tr><td>3 — Irreale</td><td>se + cong. trapassato</td><td>condizionale passato</td><td>counterfactual: Se fossi arrivato prima, l'avrei visto.</td></tr>
+<tr><td>Misto</td><td>se + cong. trapassato</td><td>condizionale presente</td><td>Se fossi nato in Italia, parlerei italiano perfettamente.</td></tr></table>
+<div class="exercise-block">
+  <div class="ex-q">Se (potere) ___, verrei subito. (Type 2)</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'potessi')">✓</button>
+  <div class="ex-q">Se (studiare) ___ di più, avresti superato l'esame. (Type 3)</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'avessi studiato')">✓</button>
+</div>` },
+
+                { id:'markers', title:'MARCATORI DEL DISCORSO', tag:'C1', level:'C1', content:`
+<table class="conj-table"><tr><th>Marker</th><th>Meaning</th><th>Register</th><th>Example</th></tr>
+<tr><td><strong>boh</strong></td><td>no idea, complete uncertainty</td><td>neutral/casual</td><td>"Boh, non lo so proprio."</td></tr>
+<tr><td><strong>mah</strong></td><td>mild doubt, resignation, "well..."</td><td>thoughtful</td><td>"Mah, vedremo come va."</td></tr>
+<tr><td><strong>cioè</strong></td><td>I mean, that is, clarification</td><td>very common</td><td>"È simpatico, cioè, non lo conosco bene ma..."</td></tr>
+<tr><td><strong>comunque</strong></td><td>anyway, however, topic shift</td><td>neutral</td><td>"Comunque, tornando a noi..."</td></tr>
+<tr><td><strong>tipo</strong></td><td>like, kind of (youth filler)</td><td>informal/youth</td><td>"È tipo una cosa strana, non so."</td></tr>
+<tr><td><strong>magari</strong></td><td>maybe / if only / I wish!</td><td>universal</td><td>"Magari!" / "Magari viene anche lei."</td></tr>
+<tr><td><strong>mica</strong></td><td>not at all, emphatic negation</td><td>colloquial</td><td>"Non è mica stupido." "Mica male!"</td></tr>
+<tr><td><strong>dai</strong></td><td>come on, really, encouragement</td><td>very casual</td><td>"Dai, non fare così!" "Dai, ci credo!"</td></tr>
+<tr><td><strong>vabbè</strong></td><td>okay/fine/whatever</td><td>informal</td><td>"Vabbè, facciamo così allora."</td></tr>
+<tr><td><strong>insomma</strong></td><td>in short, so, well</td><td>neutral</td><td>"Insomma, non è andata benissimo."</td></tr>
+<tr><td><strong>figurati</strong></td><td>don't mention it, of course</td><td>informal</td><td>"Grazie mille!" "Figurati!"</td></tr></table>` }
+              ],
+              french: [
+                { id:'fr-art', title:'LES ARTICLES', tag:'A1', level:'A1', content:`
+<p><strong>Definite:</strong> le (m.sg), la (f.sg), l' (before vowel), les (pl).<br><strong>Indefinite:</strong> un (m.sg), une (f.sg), des (pl).<br><strong>Partitive:</strong> du (m.sg = de + le), de la (f.sg), de l' (before vowel), des (pl).</p>
+<p>After negation: des/du/de la → de: "Je n'ai pas de voiture." After quantity expressions: de only: "beaucoup de gens, un kilo de farine, trop de bruit."</p>
+<div class="exercise-block">
+  <div class="ex-q">Je bois ___ eau tous les matins.</div>
+  <input class="ex-input" placeholder="article"> <button class="ex-btn" onclick="chk(this,'de l\'')">✓</button>
+</div>` },
+                { id:'fr-subj', title:'LE SUBJONCTIF', tag:'B2', level:'B2', content:`
+<p><strong>Formation:</strong> ils-form present tense stem + -e/-es/-e/-ions/-iez/-ent.</p>
+<div class="ipa-example">parler: ils parlent → que je parle, tu parles, il parle, nous parlions, vous parliez, ils parlent<br>faire: ils font → que je fasse, tu fasses, il fasse, nous fassions, vous fassiez, ils fassent<br>être: sois, soit, soyons, soyez, soient &nbsp;|&nbsp; avoir: aie, ait, ayons, ayez, aient</div>
+<p><strong>Triggers:</strong> vouloir que, falloir que, il faut que, bien que, pour que, avant que, à moins que, il est important que, craindre que, regretter que, douter que.</p>
+<div class="exercise-block">
+  <div class="ex-q">Il faut que tu ___ (être) à l'heure.</div>
+  <input class="ex-input" placeholder="verb"> <button class="ex-btn" onclick="chk(this,'sois')">✓</button>
+</div>` }
+              ],
+              catalan: [
+                { id:'ca-art', title:'ELS ARTICLES', tag:'A1', level:'A1', content:`
+<p><strong>Definite:</strong> el (m.sg), la (f.sg), l' (before vowel or h), els (m.pl), les (f.pl).<br><strong>Indefinite:</strong> un (m.sg), una (f.sg), uns (m.pl), unes (f.pl).<br><strong>Contractions:</strong> a + el = al, de + el = del.</p>
+<div class="ipa-example">el llibre, la taula, l'home, els amics, les noies<br>un home, una dona, uns amics, unes noies</div>` },
+                { id:'ca-ser-estar', title:'SER I ESTAR', tag:'A2', level:'A2', content:`
+<p><strong>Ser:</strong> identity, origin, profession, essential characteristics, time, impersonal expressions.<br><strong>Estar:</strong> location of people/objects, temporary states, progressive (estar + gerundi).</p>
+<div class="ipa-example">Sóc italià. (I am Italian — identity) &nbsp;|&nbsp; Estic a Roma. (I'm in Rome — location)<br>Ell és metge. (He is a doctor) &nbsp;|&nbsp; Estic cansat. (I'm tired — state)<br>Estic menjant. (I'm eating — progressive)</div>
+<div class="vocab-note">⚡ Key difference from Spanish: Catalan uses estar for LOCATION (Spanish uses estar too), but Catalan "ser" is used for some contexts where Spanish uses "estar" in certain regions.</div>` }
+              ]
+            };
+            const langTopics = topics[lang] || topics.italian;
+            return langTopics.map(t => {
+              const isBasic = ['A1','A2'].includes(t.level);
+              const userLevel = (state.languages[lang]||{}).level || 'A1-A2';
+              const isAdvanced = userLevel.includes('C1') || userLevel.includes('C2');
+              const dimmed = isBasic && isAdvanced && !state.showAllLevels;
+              return `
+                <div class="expandable-row${dimmed?' dimmed':''}" data-level="${t.level}" onclick="toggleExpand(this)">
+                    <div class="expandable-row-header">
+                        <span class="expandable-row-title">${t.title}${dimmed?' <span style=\'font-size:10px;color:var(--text-light)\'>basics</span>':''}</span>
+                        <div class="expandable-row-meta">
+                            <span class="progress-dot" id="dot-g-${t.id}"></span>
+                            <span class="tag">${t.tag}</span>
+                            <span class="arrow">→</span>
+                        </div>
+                    </div>
+                    <div class="expandable-content">${t.content}</div>
+                </div>`;
+            }).join('');
+        }
+
+        
+        function getDialogsContent() {
+            const lang = state.currentLang;
+            const allDialogs = {
+              italian: [
+                { id:'bar-mattina', title:'Al Bar — Mattina', level:'A2', category:'Vita Quotidiana',
+                  lines:[
+                    {s:'Barista',it:'Buongiorno, cosa prende?',en:'Good morning, what will you have?'},
+                    {s:'Cliente',it:'Un cappuccino e un cornetto, per favore.',en:'A cappuccino and a croissant, please.'},
+                    {s:'Barista',it:'Che tipo di cornetto? Vuoto, con la crema o con la marmellata?',en:'What kind? Plain, with cream or with jam?'},
+                    {s:'Cliente',it:'Con la crema, grazie.',en:'With cream, thank you.'},
+                    {s:'Barista',it:'Sono due euro. Paga alla cassa, per favore.',en:"That's two euros. Please pay at the register."}
+                  ], vocab:'cornetto = croissant | crema = custard cream | paga alla cassa = pay at the register | vuoto = plain/empty'},
+                { id:'bar-aperitivo', title:'Al Bar — Aperitivo', level:'B1', category:'Vita Quotidiana',
+                  lines:[
+                    {s:'Cliente',it:'Siamo in cinque. Cosa ci consiglia?',en:'There are five of us. What do you recommend?'},
+                    {s:'Barista',it:"Vi consiglio l'aperitivo della casa: prosecco, olive, arachidi, patatine fritte e pizzette. Tutto compreso.",en:'I recommend the house aperitif: prosecco, olives, peanuts, fries, and mini pizzas. All included.'},
+                    {s:'Cliente',it:"Perfetto, cinque aperitivi della casa. Si può fumare qui?",en:'Perfect, five house aperitivos. Can you smoke here?'},
+                    {s:'Barista',it:"Solo ai tavoli all'aperto, mi dispiace.",en:"Only at the outdoor tables, I'm afraid."}
+                  ], vocab:"consigliare = to recommend | arachidi = peanuts | all'aperto = outdoors | mi dispiace = I'm sorry"},
+                { id:'mercato-pesce', title:'Al Mercato del Pesce', level:'B2', category:'Vita Quotidiana',
+                  lines:[
+                    {s:'Pescivendolo',it:'Serviamo il numero quarantotto!',en:'Serving number forty-eight!'},
+                    {s:'Cliente',it:'Eccomi!',en:'Here I am!'},
+                    {s:'Pescivendolo',it:'Buonasera signora, che le do?',en:'Good evening ma\'am, what can I get you?'},
+                    {s:'Cliente',it:'Quante sono le orate in offerta?',en:'Which sea bream are on offer?'},
+                    {s:'Pescivendolo',it:'Sono queste, guardi che belle. Fresche fresche.',en:'These ones, look how lovely. Fresh off the boat.'},
+                    {s:'Cliente',it:'Sono di mare o di allevamento?',en:'Are they wild or farmed?'},
+                    {s:'Pescivendolo',it:'Di allevamento, italiane, in offerta a nove euro e novanta al chilo.',en:'Farmed, Italian, on offer at nine ninety a kilo.'},
+                    {s:'Cliente',it:'Allora me ne dia tre. Gliele pulisce?',en:'Then give me three. Will you clean them for me?'},
+                    {s:'Pescivendolo',it:'Certo, signora. Serve altro?',en:'Of course, ma\'am. Anything else?'},
+                    {s:'Cliente',it:'Sì, vorrei fare una pasta allo scoglio. Quei gamberoni sono freschi?',en:'Yes, I\'d like to make seafood pasta. Are those prawns fresh?'},
+                    {s:'Pescivendolo',it:'Purtroppo quelli sono decongelati. Di freschi sono arrivati solo gli scampi.',en:'Unfortunately those are defrosted. Only langoustines came in fresh.'},
+                    {s:'Cliente',it:'Va bene, mi dia un paio di etti di scampi e due calamari grandi.',en:'Alright, give me about 200g of langoustines and two large squid.'},
+                    {s:'Pescivendolo',it:'Sono quattordici euro e quarantacinque.',en:"That's fourteen forty-five."}
+                  ], vocab:'orate = sea bream | allevamento = farmed | gliele pulisce? = will you clean them? (double pronoun!) | gamberoni = king prawns | decongelati = defrosted | scampi = langoustines | etti = hectograms (100g) | calamari = squid'},
+                { id:'taxi-prenota', title:'Prenotare un Taxi', level:'A2', category:'Viaggio',
+                  lines:[
+                    {s:'Cliente',it:'Pronto? Parlo con la società dei taxi?',en:'Hello? Is this the taxi company?'},
+                    {s:'Impiegata',it:'Sì buongiorno signora, mi dica.',en:'Yes, good morning ma\'am, go ahead.'},
+                    {s:'Cliente',it:"Ho bisogno di un taxi per mezzogiorno, per l'aeroporto.",en:'I need a taxi at noon, for the airport.'},
+                    {s:'Impiegata',it:'Il suo nome?',en:'Your name?'},
+                    {s:'Cliente',it:'Sara Rossi.',en:'Sara Rossi.'},
+                    {s:'Impiegata',it:'Il suo indirizzo?',en:'Your address?'},
+                    {s:'Cliente',it:'Via dei Gerani dodici.',en:'Via dei Gerani, twelve.'},
+                    {s:'Impiegata',it:'Benissimo, il taxi sarà da lei a mezzogiorno.',en:'Very good, the taxi will be there at noon.'},
+                    {s:'Cliente',it:'La ringrazio. Arrivederci.',en:'Thank you. Goodbye.'}
+                  ], vocab:'società dei taxi = taxi company | mi dica = go ahead (formal) | sarà da lei = will be at your place'},
+                { id:'bagaglio', title:'Il Bagaglio Smarrito', level:'B2', category:'Viaggio',
+                  lines:[
+                    {s:'Mark',it:'Buongiorno, sono atterrato stamattina con il volo AX345 e non ho ancora ricevuto il bagaglio. Sono le tre del pomeriggio.',en:"Good morning, I landed this morning on flight AX345 and still haven't received my luggage. It's three in the afternoon."},
+                    {s:'Impiegata',it:'Strano. I bagagli del suo volo sono arrivati alle dieci e venti. Il suo nome?',en:'Strange. The luggage from your flight arrived at ten twenty. Your name?'},
+                    {s:'Mark',it:'Scott Mark.',en:'Scott Mark.'},
+                    {s:'Impiegata',it:'Vado a controllare in magazzino... Mi dispiace, non c\'è. Il suo bagaglio deve essere stato smarrito. Bisogna fare una denuncia di smarrimento e compilare questo modulo.',en:"I'll check the warehouse... I'm sorry, it's not here. Your luggage must have been lost. We need to file a loss report and fill out this form."},
+                    {s:'Mark',it:'È possibile trovarlo?',en:'Is it possible to find it?'},
+                    {s:'Impiegata',it:"Facciamo subito domanda agli altri aeroporti. Ha un'assicurazione sul bagaglio?",en:"We'll check with other airports right away. Do you have luggage insurance?"},
+                    {s:'Mark',it:'Sì, per furto e smarrimento.',en:'Yes, for theft and loss.'},
+                    {s:'Impiegata',it:'Perfetto. Con la denuncia ha diritto a un rimborso. Ci lasci i suoi recapiti.',en:'Perfect. With the report you\'re entitled to a refund. Leave us your contact details.'}
+                  ], vocab:'atterrato = landed | smarrire = to lose | denuncia di smarrimento = loss report | compilare = to fill out | assicurazione = insurance | rimborso = refund | recapiti = contact details'},
+                { id:'crimine', title:'Segnalare un Crimine', level:'C1', category:'Problemi',
+                  lines:[
+                    {s:'Lucia',it:'Pronto, sono Lucia Rossi, chiamo dalla stazione Termini. Due uomini hanno derubato una donna qui davanti e sono scappati!',en:'Hello, I\'m Lucia Rossi calling from Termini station. Two men just robbed a woman right in front of me and fled!'},
+                    {s:'Polizia',it:"Ha visto l'accaduto?",en:'Did you witness what happened?'},
+                    {s:'Lucia',it:"Sì, è successo davanti ai miei occhi.",en:'Yes, it happened right in front of my eyes.'},
+                    {s:'Polizia',it:'Ci descriva i ladri.',en:'Describe the thieves to us.'},
+                    {s:'Lucia',it:"Erano in due — un ragazzo sui vent'anni e un uomo sulla quarantina. Entrambi in jeans scuri. Il giovane aveva un cappotto bianco e un cappello di lana nero; l'altro aveva la barba e i capelli lunghi, cappotto di pelle marrone. Sono scappati verso via Marsala, saranno dieci minuti fa.",en:"There were two — a guy around twenty and a man in his forties. Both in dark jeans. The young one had a white coat and a black wool hat; the other had a beard and long hair, brown leather coat. They ran toward via Marsala, maybe ten minutes ago."},
+                    {s:'Polizia',it:'Abbiamo già allertato la pattuglia di via Marsala. Può restare in zona?',en:"We've already alerted the patrol on via Marsala. Can you stay in the area?"},
+                    {s:'Lucia',it:'Sì, certo. Grazie.',en:'Yes, of course. Thank you.'}
+                  ], vocab:'derubato = robbed | l\'accaduto = what happened | ladri = thieves | sulla quarantina = around forty | pelle = leather | di corsa = running | saranno = must be (epistemic future) | pattuglia = patrol unit'},
+                { id:'medico', title:'Dal Medico', level:'B2', category:'Problemi',
+                  lines:[
+                    {s:'Paziente',it:'Buongiorno, non mi sento bene. Ho un gran mal di gola, mal di testa e il raffreddore.',en:"Good morning, I'm not feeling well. I have a bad sore throat, headache, and a cold."},
+                    {s:'Dottore',it:'Da quando?',en:'Since when?'},
+                    {s:'Paziente',it:'Da ieri sera. Ho anche i brividi e mi fa male dappertutto.',en:'Since last night. I also have chills and I ache all over.'},
+                    {s:'Dottore',it:'Apra la bocca... Le tonsille sono infiammate. È un\'influenza stagionale. Le prescrivo un antibiotico due volte al giorno, uno spray per la gola, e del paracetamolo se sale la febbre. Riposo assoluto per almeno tre giorni.',en:"Open your mouth... Your tonsils are inflamed. It's seasonal flu. I'll prescribe an antibiotic twice a day, a throat spray, and paracetamol if you get a fever. Complete rest for at least three days."},
+                    {s:'Paziente',it:'Grazie dottore.',en:'Thank you, doctor.'}
+                  ], vocab:'mal di gola = sore throat | brividi = chills | dappertutto = everywhere | tonsille infiammate = inflamed tonsils | prescrivo = I prescribe | riposo assoluto = complete rest'},
+                { id:'esaurimento', title:"L'Esaurimento Nervoso", level:'C1', category:'Vita Sociale',
+                  lines:[
+                    {s:'Carla',it:'Pronto Luisa, sono Carla. Non sto per niente bene — puoi venire il prima possibile?',en:"Hello Luisa, it's Carla. I'm not well at all — can you come as soon as possible?"},
+                    {s:'Luisa',it:'Carla, mi devo preoccupare?',en:'Carla, should I be worried?'},
+                    {s:'Carla',it:'Sto avendo un esaurimento nervoso. Ho bisogno di qualcuno con cui parlare.',en:"I'm having a nervous breakdown. I need someone to talk to."},
+                    {s:'Luisa',it:'Allora, dimmi tutto.',en:'So, tell me everything.'},
+                    {s:'Carla',it:'Al lavoro sto malissimo. Il mio capo mi tratta come se fossi incompetente, è sempre nervoso e fa ricadere tutto su di me. Ho paura che voglia licenziarmi, e tra due settimane devo presentare un progetto importantissimo. Sono sotto pressione. Ho una grande ansia, mi trema tutto, non riesco a dormire.',en:"Work is terrible. My boss treats me like I'm incompetent, always on edge, takes everything out on me. I'm afraid he wants to fire me, and in two weeks I have to present a huge project. I'm under pressure. Terrible anxiety, I'm shaking, can't sleep."},
+                    {s:'Luisa',it:'Carla, ti capisco. Questa è una situazione pesante. Prima cosa: devi dormire. Adesso ti preparo una camomilla, ti metti a letto, e poi quando ti svegli pensiamo insieme al progetto. Una cosa alla volta, va bene?',en:"Carla, I understand you. This is a heavy situation. First thing: you need to sleep. I'll make you a chamomile tea, you get into bed, and when you wake up we'll think about the project together. One thing at a time, okay?"},
+                    {s:'Carla',it:'Va bene. Grazie Luisa, sei una vera amica.',en:"Okay. Thank you Luisa, you're a true friend."}
+                  ], vocab:'esaurimento nervoso = nervous breakdown | il prima possibile = as soon as possible | ricadere su = to be taken out on | licenziarmi = fire me | sotto pressione = under pressure | ansia = anxiety | tremare = to shake | camomilla = chamomile tea'},
+                { id:'posta', title:"All'Ufficio Postale", level:'B1', category:'Servizi',
+                  lines:[
+                    {s:'Cliente',it:"Buongiorno, dovrei spedire questo pacco all'estero.",en:"Good morning, I need to send this package abroad."},
+                    {s:'Impiegata',it:'Vuole la posta prioritaria o quella ordinaria?',en:'Do you want priority or regular mail?'},
+                    {s:'Cliente',it:"Che differenza c'è?",en:"What's the difference?"},
+                    {s:'Impiegata',it:'La prioritaria arriva in tre giorni lavorativi, la ordinaria in sette-dieci. Con la prioritaria il pacco è tracciabile.',en:'Priority arrives in three working days, regular in seven to ten. With priority, the package is trackable.'},
+                    {s:'Cliente',it:'Meglio la prioritaria allora. Quanto viene?',en:'Better priority then. How much is it?'},
+                    {s:'Impiegata',it:'Vediamo il peso... tre chili e mezzo. Sono ventiquattro euro.',en:"Let's see the weight... three and a half kilos. That's twenty-four euros."},
+                    {s:'Cliente',it:'Bene. Posso pagare con carta?',en:'Fine. Can I pay by card?'},
+                    {s:'Impiegata',it:'Certo.',en:'Of course.'}
+                  ], vocab:'spedire = to send/ship | pacco = package | all\'estero = abroad | posta prioritaria = priority mail | tracciabile = trackable | giorni lavorativi = working days | quanto viene? = how much is it? (colloquial)'},
+                { id:'invito', title:'Declinare un Invito', level:'B2', category:'Vita Sociale',
+                  lines:[
+                    {s:'Paola',it:"Ciao Gianluca! Sabato sera faccio una piccola festa per il mio compleanno a casa mia. Ci sei?",en:"Hey Gianluca! Saturday evening I'm having a small birthday party at my place. Are you in?"},
+                    {s:'Gianluca',it:"Paola! Mi dispiace tantissimo ma sabato non posso. Mia sorella si sposa e sarò impegnato tutta la giornata.",en:"Paola! I'm so sorry but I can't on Saturday. My sister is getting married and I'll be busy all day."},
+                    {s:'Paola',it:"Eh no, che peccato! Falle gli auguri da parte mia.",en:"Oh no, what a shame! Give her my best wishes."},
+                    {s:'Gianluca',it:"Lo faccio di sicuro. Ti prometto che ti porto il regalo lo stesso, e la prossima settimana usciamo a festeggiare, solo noi due. Che ne dici?",en:"I definitely will. I promise I'll bring your gift anyway, and next week we'll go out to celebrate, just the two of us. What do you say?"},
+                    {s:'Paola',it:'Affare fatto!',en:'Deal!'}
+                  ], vocab:"ci sei? = are you in? | che peccato = what a shame | si sposa = is getting married | falle gli auguri = give her best wishes | lo stesso = anyway | affare fatto = deal!"}
+              ],
+              french: [
+                { id:'fr-cafe', title:'Au Café', level:'A2', category:'Vie Quotidienne',
+                  lines:[
+                    {s:'Serveur',it:'Bonjour, vous désirez?',en:'Good morning, what would you like?'},
+                    {s:'Client',it:'Un café crème et un croissant, s\'il vous plaît.',en:'A coffee with cream and a croissant, please.'},
+                    {s:'Serveur',it:'Tout de suite. Vous êtes en salle ou en terrasse?',en:'Right away. Inside or on the terrace?'},
+                    {s:'Client',it:'En terrasse, il fait beau.',en:"On the terrace, the weather's lovely."},
+                    {s:'Serveur',it:'Voilà. Bon appétit!',en:'Here you go. Enjoy!'}
+                  ], vocab:"désirez = would you like (formal) | café crème = coffee with cream | tout de suite = right away | en salle = inside | en terrasse = on the terrace"},
+                { id:'fr-gare', title:'À la Gare', level:'B1', category:'Voyage',
+                  lines:[
+                    {s:'Voyageur',it:'Pardon, je voudrais un billet pour Lyon, pour demain matin.',en:'Excuse me, I\'d like a ticket to Lyon, for tomorrow morning.'},
+                    {s:'Guichetière',it:'Aller simple ou aller-retour?',en:'One way or round trip?'},
+                    {s:'Voyageur',it:'Aller-retour. Je reviens jeudi.',en:'Round trip. I\'m coming back Thursday.'},
+                    {s:'Guichetière',it:'Première ou deuxième classe?',en:'First or second class?'},
+                    {s:'Voyageur',it:'Deuxième classe.',en:'Second class.'},
+                    {s:'Guichetière',it:'Le TGV de huit heures vingt arrive une heure plus tôt. Ça vous convient?',en:'The TGV at eight twenty arrives an hour earlier. Does that suit you?'},
+                    {s:'Voyageur',it:'C\'est parfait, merci.',en:"That's perfect, thank you."}
+                  ], vocab:'aller simple = one way | aller-retour = round trip | ça vous convient = does that suit you | TGV = high-speed train'}
+              ],
+              catalan: [
+                { id:'ca-bar', title:'Al Bar', level:'A2', category:'Vida Quotidiana',
+                  lines:[
+                    {s:'Cambrer',it:'Bon dia! Que voleu?',en:'Good day! What would you like?'},
+                    {s:'Client',it:'Un tallat i un croissant, si us plau.',en:'A cortado and a croissant, please.'},
+                    {s:'Cambrer',it:"D'acord. Preneu aquí o us ho emporteu?",en:'Alright. Having it here or taking away?'},
+                    {s:'Client',it:'Aquí, gràcies.',en:'Here, thanks.'},
+                    {s:'Cambrer',it:"Molt bé. Ara us ho porto.",en:"Very good. I'll bring it right now."}
+                  ], vocab:"tallat = cortado (espresso + splash of milk) | si us plau = please | d'acord = alright | emportar = to take away"},
+                { id:'ca-metge', title:'Al Metge', level:'B1', category:'Problemes',
+                  lines:[
+                    {s:'Pacient',it:'Bon dia. Em trobo malament. Tinc mal de coll i febre.',en:'Good day. I feel unwell. I have a sore throat and a fever.'},
+                    {s:'Metge',it:'Des de quan?',en:'Since when?'},
+                    {s:'Pacient',it:'Des de ahir al vespre.',en:'Since last night.'},
+                    {s:'Metge',it:"Obri la boca... Té les amígdales inflamades. Li receptaré un antibiòtic.",en:'Open your mouth... Your tonsils are inflamed. I\'ll prescribe an antibiotic.'},
+                    {s:'Pacient',it:'Gràcies, doctor.',en:'Thank you, doctor.'}
+                  ], vocab:'em trobo malament = I feel unwell | mal de coll = sore throat | febre = fever | amígdales inflamades = inflamed tonsils | receptar = to prescribe'}
+              ]
+            };
+            const dialogs = allDialogs[lang] || allDialogs.italian;
+            const categories = [...new Set(dialogs.map(d => d.category))];
+            let html = `<div class="dialog-filters">
+              <button class="filter-btn active" onclick="filterDialogs(this,'all')">All</button>
+              ${categories.map(c=>`<button class="filter-btn" onclick="filterDialogs(this,'${c}')">${c}</button>`).join('')}
+            </div>
+            <div id="dialog-list">`;
+            html += dialogs.map(d => `
+              <div class="dialog-card" data-cat="${d.category}" data-id="${d.id}">
+                <div class="dialog-card-header" onclick="openDialog('${d.id}')">
+                  <div>
+                    <span class="dialog-level-tag">${d.level}</span>
+                    <span class="dialog-cat-tag">${d.category}</span>
+                  </div>
+                  <div class="dialog-card-title">${d.title}</div>
+                  <span class="arrow">→</span>
+                </div>
+                <div class="dialog-body" id="dlg-${d.id}" style="display:none">
+                  <div class="dialog-toolbar">
+                    <button class="dlg-tool-btn" onclick="toggleTranslations('${d.id}')">Toggle English</button>
+                    <button class="dlg-tool-btn" onclick="togglePractice('${d.id}')">Practice Mode</button>
+                  </div>
+                  <div class="dialog-lines" id="lines-${d.id}">
+                    ${d.lines.map((l,i)=>`
+                    <div class="dlg-line">
+                      <span class="dlg-speaker">${l.s}</span>
+                      <div class="dlg-text">
+                        <div class="dlg-it">${l.it}</div>
+                        <div class="dlg-en">${l.en}</div>
+                        <div class="dlg-practice-input" style="display:none">
+                          <input type="text" class="ex-input" placeholder="Type the Italian line...">
+                          <button class="ex-btn" onclick="checkDialogLine(this,'${l.it.replace(/'/g,"\'")}')">✓</button>
+                        </div>
+                      </div>
+                    </div>`).join('')}
+                  </div>
+                  <div class="dialog-vocab-box"><strong>Vocabolario:</strong> ${d.vocab}</div>
+                </div>
+              </div>`).join('');
+            html += '</div>';
+            return html;
+        }
+
+        
+        function getResourcesContent() {
+            const lang = state.currentLang;
+            const langData = state.languages[lang] || {};
+            const styles = langData.learningStyles || [];
+            const goals = langData.goals || [];
+            const level = langData.level || 'A1-A2';
+            const isAdvanced = level.includes('C1') || level.includes('C2');
+
+            const allResources = {
+              italian: {
+                youtube: [
+                  { name:'Geopop', url:'https://www.youtube.com/@geopop', desc:'Educational science/history/culture. Young Italian presenters. Excellent comprehensible input — real language, real topics.', level:'C1+', tags:['immersion','listening'] },
+                  { name:'Easy Italian', url:'https://www.youtube.com/@EasyItalian', desc:'Street interviews with subtitles. Multiple regional accents. Natural speech in real contexts.', level:'B1+', tags:['listening','immersion'] },
+                  { name:'Italia Slow Tour', url:'https://www.youtube.com/@ItaliaSlowTour', desc:'Travel and culture vlogs across Italian regions. Beautiful landscapes, natural conversational Italian.', level:'B1+', tags:['immersion','culture'] },
+                  { name:'SKAM Italia (clips)', url:'https://www.youtube.com/results?search_query=skam+italia', desc:'Teen drama clips. How young Italians actually talk — slang, rhythm, humor, register.', level:'B2+', tags:['immersion','youth','sound native'] },
+                  { name:'Favij', url:'https://www.youtube.com/@Favij', desc:'Italian gaming YouTuber. Very colloquial, fast, lots of contemporary slang. Excellent for youth register.', level:'C1', tags:['immersion','youth','gaming'] },
+                  { name:'Sio (comics)', url:'https://www.youtube.com/@Siochannel', desc:'Italian humor and comics channel. Absurdist comedy in very natural Italian.', level:'C1', tags:['humor','immersion'] },
+                  { name:'Italiano con Elisa', url:'https://www.youtube.com/@italianoconautore', desc:'Grammar and vocabulary explanations. Clear, structured, good for filling gaps.', level:'A2-B2', tags:['grammar'] }
+                ],
+                podcasts: [
+                  { name:'Coffee Break Italian', url:'https://coffeebreaklanguages.com/coffeebreakitalian/', desc:'Structured progressive lessons. Good for systematic building.', level:'A1-B2', tags:['grammar','listening'] },
+                  { name:'News in Slow Italian', url:'https://www.newsinslowitalian.com/', desc:'Current events delivered at reduced speed with natural phrasing. Excellent comprehension training.', level:'B1-C1', tags:['listening','reading'] },
+                  { name:'Italiano con Amore', url:'https://www.italianconlamore.com/', desc:'Culture, society, conversation. Natural Italian for advanced learners.', level:'B2-C1', tags:['culture','immersion'] },
+                  { name:'RAI Radio', url:'https://www.raiplayradio.it/', desc:'Authentic Italian radio — news, culture, entertainment. The real thing.', level:'C1+', tags:['listening','immersion'] }
+                ],
+                websites: [
+                  { name:'Online Italian Club', url:'https://onlineitalianclub.com/', desc:'Excellent grammar exercises and real listening dialogs (source for this site\'s dialogs). Free, comprehensive, A1-C2.', level:'All', tags:['grammar','listening'] },
+                  { name:'Mango Languages Grammar', url:'https://mangolanguages.com/resources/learn/grammar/italian/', desc:'Clear, well-structured grammar explanations with examples. 69+ articles on Italian grammar.', level:'A1-B2', tags:['grammar'] },
+                  { name:'WordReference', url:'https://www.wordreference.com/iten/', desc:'Best Italian-English dictionary. Forums with native speaker usage examples.', level:'All', tags:['vocabulary'] },
+                  { name:'Treccani', url:'https://www.treccani.it/', desc:'Authoritative Italian dictionary and encyclopedia. The Italian version of Merriam-Webster.', level:'C1+', tags:['vocabulary','culture'] },
+                  { name:'Corriere della Sera', url:'https://www.corriere.it/', desc:'Major Italian newspaper. Reading practice with contemporary language.', level:'C1+', tags:['reading','culture'] }
+                ],
+                books: [
+                  { name:"L'amica geniale — Elena Ferrante", url:'', desc:'Neapolitan novels. Rich contemporary Italian, strong female voices, compelling story.', level:'C1-C2', tags:['reading','culture','literature'] },
+                  { name:'Gomorra — Roberto Saviano', url:'', desc:'Gripping Neapolitan reality. Raw, direct language. Camorra and Neapolitan society.', level:'C1-C2', tags:['reading','culture'] },
+                  { name:'Se una notte d\'inverno un viaggiatore — Calvino', url:'', desc:'Experimental, playful. Calvino at his most inventive. Challenging and rewarding.', level:'C1-C2', tags:['literature','reading'] },
+                  { name:'La solitudine dei numeri primi — Paolo Giordano', url:'', desc:'Readable contemporary novel. Clean modern prose, not overly complex.', level:'B2-C1', tags:['reading'] },
+                  { name:'Italian Short Stories — Olly Richards', url:'', desc:'Graded readers with vocabulary support. Good for building reading habit.', level:'A2-B1', tags:['reading'] }
+                ],
+                tvfilm: [
+                  { name:'SKAM Italia', url:'https://www.netflix.com/', desc:'Teen drama on Netflix. Authentic youth register. Unmissable for anyone targeting native sound.', level:'B2-C1', tags:['immersion','youth','sound native'] },
+                  { name:'Boris', url:'https://www.raiplay.it/', desc:'Satirical series about Italian TV production. Incredible, witty dialogue. A masterpiece.', level:'C1-C2', tags:['humor','culture','immersion'] },
+                  { name:'Suburra', url:'https://www.netflix.com/', desc:'Roman crime drama on Netflix. Dark, atmospheric, Roman dialect elements.', level:'C1-C2', tags:['immersion','culture'] },
+                  { name:'Montalbano', url:'https://www.raiplay.it/', desc:'Sicilian detective series on RaiPlay. Beautiful literary Italian with Sicilian flavor.', level:'C1-C2', tags:['listening','culture'] }
+                ]
+              },
+              french: {
+                youtube: [
+                  { name:'Easy French', url:'https://www.youtube.com/@EasyFrench', desc:'Street interviews across France with subtitles. Natural speech, diverse speakers.', level:'B1+', tags:['listening','immersion'] },
+                  { name:'Français avec Pierre', url:'https://www.youtube.com/@francaisavecpierre', desc:'Grammar and vocabulary explanations by a native teacher. Clear and structured.', level:'A2-B2', tags:['grammar'] },
+                  { name:'InnerFrench', url:'https://www.youtube.com/@innerfrench', desc:'Slow, clear French on interesting topics. Designed for intermediate learners.', level:'B1-B2', tags:['listening','immersion'] }
+                ],
+                podcasts: [
+                  { name:'InnerFrench Podcast', url:'https://innerfrench.com/', desc:'Hugo Cotton speaks slowly and clearly about culture, ideas, society. B1-B2 goldmine.', level:'B1-B2', tags:['listening'] },
+                  { name:'Coffee Break French', url:'https://coffeebreaklanguages.com/coffeebreakfrench/', desc:'Structured lessons from A1 onwards.', level:'A1-B2', tags:['grammar','listening'] }
+                ],
+                websites: [
+                  { name:'TV5Monde', url:'https://langue.tv5monde.com/fr', desc:'French TV with subtitles and exercises. Excellent authentic content.', level:'B1+', tags:['listening','immersion'] },
+                  { name:'Le Monde', url:'https://www.lemonde.fr/', desc:'Leading French newspaper. Sophisticated vocabulary and grammar in context.', level:'C1+', tags:['reading','culture'] }
+                ],
+                books: [
+                  { name:'Le Petit Prince — Saint-Exupéry', url:'', desc:'Short, poetic, beautiful. Elegant French with philosophical depth.', level:'B1-C1', tags:['literature','reading'] },
+                  { name:"L'Étranger — Camus", url:'', desc:'Short, direct prose. Existential classic. Accessible but rewarding.', level:'B2-C1', tags:['literature','reading'] }
+                ],
+                tvfilm: [
+                  { name:'Lupin (Netflix)', url:'', desc:'Entertaining thriller. Natural contemporary French.', level:'B2-C1', tags:['immersion'] },
+                  { name:'Arte.tv', url:'https://www.arte.tv/', desc:'French-German cultural TV. Documentaries, films, series in French.', level:'B2+', tags:['culture','immersion'] }
+                ]
+              },
+              catalan: {
+                youtube: [
+                  { name:'TV3 (3alacarta)', url:'https://www.ccma.cat/tv3/alacarta/', desc:'Catalan public TV. News, series, documentaries. The best immersion resource available.', level:'B1+', tags:['immersion','listening'] }
+                ],
+                podcasts: [
+                  { name:'Vilaweb Ràdio', url:'https://www.vilaweb.cat/radio/', desc:'Catalan news radio. Contemporary Catalan language in real contexts.', level:'B2+', tags:['listening','culture'] }
+                ],
+                websites: [
+                  { name:'Parla.cat', url:'https://www.parla.cat/', desc:'Official Catalan learning platform. Structured courses, exercises, resources.', level:'A1-B2', tags:['grammar','listening'] },
+                  { name:'Softcatalà', url:'https://www.softcatalà.org/', desc:'Language tools, spellchecker, dictionary, translation aids for Catalan.', level:'All', tags:['vocabulary'] },
+                  { name:'VilaWeb', url:'https://www.vilaweb.cat/', desc:'Catalan news site. Good reading practice.', level:'B2+', tags:['reading','culture'] }
+                ],
+                books: [
+                  { name:'Tirant lo Blanc — Joanot Martorell', url:'', desc:'Medieval masterpiece of Catalan literature. Challenging but historically significant.', level:'C1-C2', tags:['literature'] },
+                  { name:'Solitud — Víctor Català', url:'', desc:'Classic modernist Catalan novel.', level:'C1', tags:['literature','reading'] }
+                ],
+                tvfilm: [
+                  { name:'Merlí (Netflix)', url:'', desc:'Philosophy teacher teen drama. Very natural Catalan dialogue.', level:'B2-C1', tags:['immersion','youth'] }
+                ]
+              }
+            };
+
+            const langRes = allResources[lang] || allResources.italian;
+            const prefStyles = styles.length > 0 ? styles : ['youtube','podcasts','books','websites','tvfilm'];
+            const categoryMap = {
+              'YouTube': { key:'youtube', show: prefStyles.includes('YouTube') || prefStyles.includes('TV & Film') || styles.length===0 },
+              'Podcasts': { key:'podcasts', show: prefStyles.includes('Podcasts') || styles.length===0 },
+              'Websites': { key:'websites', show: prefStyles.includes('Websites') || prefStyles.includes('Apps') || styles.length===0 },
+              'Books': { key:'books', show: prefStyles.includes('Books') || prefStyles.includes('Reading') || prefStyles.includes('Literature') || styles.length===0 },
+              'TV & Film': { key:'tvfilm', show: prefStyles.includes('TV & Film') || prefStyles.includes('Immersion') || styles.length===0 }
+            };
+
+            let html = '';
+            if (styles.length > 0) {
+              html += `<div class="resources-note">Showing resources matched to your learning style. <a href="#" onclick="state.languages[state.currentLang].learningStyles=[];renderResources();return false;">Show all</a></div>`;
+            }
+
+            Object.entries(categoryMap).forEach(([cat, cfg]) => {
+              if (!cfg.show || !langRes[cfg.key] || langRes[cfg.key].length === 0) return;
+              html += `<div class="resource-section">
+                <h3 class="resource-cat-title">${cat}</h3>
+                <div class="resource-grid">
+                ${langRes[cfg.key].map(r => `
+                  <div class="resource-card">
+                    <div class="resource-name">${r.url ? `<a href="${r.url}" target="_blank">${r.name}</a>` : r.name}</div>
+                    <div class="resource-desc">${r.desc}</div>
+                    <span class="resource-level">${r.level}</span>
+                  </div>`).join('')}
+                </div>
+              </div>`;
+            });
+            return html || '<p style="color:var(--text-mid)">No resources available for this language yet.</p>';
+        }
+
+        
+        function getJournalPrompts() {
+            const lang = state.currentLang;
+            const prompts = {
+              italian: {
+                'Storytelling': [
+                  "Racconta dell'ultima volta che hai riso da non poterne più.",
+                  "Descrivi un posto che non dimenticherai mai. Perché è rimasto impresso?",
+                  "Racconta come hai imparato a fare qualcosa che ami fare adesso.",
+                  "Cosa faresti se ti svegliassi in una città straniera senza telefono e senza soldi?",
+                  "Descrivi una conversazione che ti ha cambiato in qualche modo.",
+                  "Racconta un malinteso divertente — idealmente uno in italiano."
+                ],
+                'Opinioni': [
+                  "Qual è la cosa più sopravvalutata nella vita moderna?",
+                  "Cosa pensi del fatto che le persone passino così tanto tempo sui social?",
+                  "È meglio vivere in città o in campagna? Difendi la tua posizione.",
+                  "Qual è la differenza più grande tra la cultura italiana e quella americana che hai osservato?",
+                  "Il viaggio cambia le persone — sei d'accordo? Porta esempi dalla tua esperienza.",
+                  "Cosa dovrebbero imparare gli adulti dai bambini?"
+                ],
+                'Vita Quotidiana': [
+                  "Descrivi la tua mattina ideale con tutti i dettagli sensoriali.",
+                  "Cosa mangeresti se fosse il tuo ultimo pasto? Dove saresti? Con chi?",
+                  "Descrivi un posto — un bar, un negozio, un vicolo — che ami frequentare.",
+                  "Come sarebbe la tua giornata perfetta a Roma? Costruisci l'itinerario.",
+                  "Cosa fai quando sei stressato? È efficace?",
+                  "Descrivi la tua settimana usando solo l'imperfetto. Cosa facevi di solito?"
+                ],
+                'Ipotetici': [
+                  "Se potessi vivere in qualsiasi epoca storica, quale sceglieresti e perché?",
+                  "Se dovessi lasciare tutto e ricominciare da zero in un nuovo paese, cosa faresti?",
+                  "Se potessi parlare con te stesso di dieci anni fa, cosa diresti?",
+                  "Immagina di avere un mese di vacanza e soldi illimitati. Racconta tutto.",
+                  "Se potessi imparare istantaneamente qualsiasi abilità, quale sarebbe e perché?",
+                  "Come sarebbe il mondo se tutti parlassero la stessa lingua?"
+                ],
+                'Umorismo': [
+                  "Descrivi la situazione più imbarazzante della tua vita senza omettere nessun dettaglio.",
+                  "Racconta qualcosa di stupido che hai fatto per impressionare qualcuno.",
+                  "Inventa una scusa assurda e dettagliatissima per non andare a una festa.",
+                  "Racconta il tuo peggior viaggio o vacanza mai fatta.",
+                  "Descrivi come hai fatto una figura di merda in italiano. Tutti ne abbiamo una.",
+                  "Se il tuo animale domestico (reale o immaginario) potesse parlare, cosa direbbe di te?"
+                ],
+                'Cultura': [
+                  "Cosa ti ha sorpreso di più della cultura italiana la prima volta che ci sei entrato in contatto?",
+                  "Descrivi un'usanza americana che pensi che gli italiani troverebbero strana o divertente.",
+                  "Qual è il cibo italiano che ami di più? Racconta la prima volta che lo hai mangiato.",
+                  "Descrivi una serie TV o un film italiano che ti ha colpito. Perché?",
+                  "Cosa significa per te 'fare una pausa'? Come si differenzia dall'idea italiana?",
+                  "Cosa ti manca di più quando sei lontano dall'Italia?"
+                ],
+                'Pratica Grammaticale': [
+                  "Racconta qualcosa che facevi sempre da bambino (usa l'imperfetto il più possibile).",
+                  "Descrivi i tuoi piani per i prossimi sei mesi (usa il futuro e il condizionale).",
+                  "Parla di qualcosa che avresti voluto fare diversamente l'anno scorso (condizionale passato).",
+                  "Se potessi cambiare una cosa del mondo, cosa faresti e perché? (periodo ipotetico tipo 2)",
+                  "Descrivi qualcuno che ammiri senza dire il suo nome (usa congiuntivo, aggettivi, pronomi relativi).",
+                  "Racconta cosa ti ha detto qualcuno di importante ieri o recentemente (discorso indiretto)."
+                ]
+              },
+              french: {
+                'Récit': [
+                  "Raconte la dernière fois que tu as ri aux larmes.",
+                  "Décris un endroit que tu n'oublieras jamais. Pourquoi est-il resté gravé dans ta mémoire?",
+                  "Comment as-tu appris à faire quelque chose que tu aimes maintenant?",
+                  "Qu'est-ce que tu ferais si tu te réveillais dans une ville étrangère sans téléphone?",
+                  "Décris une conversation qui t'a changé d'une certaine façon.",
+                  "Raconte un malentendu amusant."
+                ],
+                'Opinions': [
+                  "Quelle est la chose la plus surévaluée dans la vie moderne?",
+                  "Vaut-il mieux vivre en ville ou à la campagne? Défends ton point de vue.",
+                  "Le voyage change les gens — tu es d'accord? Donne des exemples de ta propre expérience.",
+                  "Quelle est la plus grande différence entre la culture française et ta culture?",
+                  "Qu'est-ce que les adultes devraient apprendre des enfants?",
+                  "Les réseaux sociaux font-ils plus de bien ou de mal?"
+                ],
+                'Vie Quotidienne': [
+                  "Décris ta matinée idéale avec tous les détails sensoriels.",
+                  "Quel serait ton dernier repas? Où? Avec qui?",
+                  "Décris un endroit que tu aimes fréquenter — un café, une librairie, une rue.",
+                  "Comment serait ta journée parfaite à Paris? Construis l'itinéraire.",
+                  "Qu'est-ce que tu fais quand tu es stressé(e)?",
+                  "Décris ta semaine en utilisant l'imparfait."
+                ],
+                'Pratique Grammaticale': [
+                  "Raconte ce que tu faisais enfant (utilise l'imparfait au maximum).",
+                  "Décris tes projets pour les six prochains mois (futur et conditionnel).",
+                  "Si tu pouvais changer une chose dans le monde, que ferais-tu? (subjonctif et conditionnel)",
+                  "Raconte ce que quelqu'un t'a dit récemment (discours indirect).",
+                  "Décris quelqu'un que tu admires sans dire son nom.",
+                  "Parle d'une chose que tu aurais voulu faire différemment (conditionnel passé)."
+                ]
+              },
+              catalan: {
+                'Narració': [
+                  "Explica l'últim cop que has rigut molt.",
+                  "Descriu un lloc que no oblidaràs mai. Per què ha quedat gravat a la memòria?",
+                  "Com has après a fer alguna cosa que t'agrada ara?",
+                  "Explica un malentès divertit.",
+                  "Descriu una conversa que t'ha canviat d'alguna manera.",
+                  "Explica el teu pitjor viatge mai fet."
+                ],
+                'Opinió': [
+                  "Quina és la cosa més sobrevalorada de la vida moderna?",
+                  "És millor viure a la ciutat o al camp? Defensa la teva postura.",
+                  "El viatge canvia les persones — hi estàs d'acord?",
+                  "Quina és la diferència més gran entre la cultura catalana i la teva?",
+                  "Que haurien d'aprendre els adults dels nens?"
+                ],
+                'Pràctica Gramatical': [
+                  "Explica coses que feies de petit (usa l'imperfet).",
+                  "Descriu els teus plans per als pròxims sis mesos (futur i condicional).",
+                  "Si poguessis canviar una cosa del món, què faries? (condicional)",
+                  "Explica el que et va dir algú ahir (discurs indirecte)."
+                ]
+              }
+            };
+            return prompts[lang] || prompts.italian;
+        }
+
+        
+        function checkExercise(button, correctAnswer) {
+            const input = button.previousElementSibling;
+            const answer = input.value.trim().toLowerCase();
+            const correct = correctAnswer.toLowerCase();
+
+            if (answer === correct) {
+                const feedback = document.createElement('div');
+                feedback.className = 'exercise-feedback feedback-correct';
+                feedback.textContent = '✓ Correct!';
+                button.parentElement.appendChild(feedback);
+                input.style.borderColor = '#2f7f2f';
+            } else {
+                const feedback = document.createElement('div');
+                feedback.className = 'exercise-feedback feedback-incorrect';
+                feedback.textContent = `✗ Incorrect. The answer is: ${correctAnswer}`;
+                button.parentElement.appendChild(feedback);
+                input.style.borderColor = 'var(--accent)';
+            }
+        }
+
+
+        function switchLanguage(lang) {
+            if (!state.languages[lang]) return;
+            state.currentLang = lang;
+            state.currentLanguage = lang;
+            // Update nav badge
+            const badges = { italian:'🇮🇹 IT', french:'🇫🇷 FR', catalan:'🏴 CA' };
+            document.getElementById('lang-badge').textContent = badges[lang] || lang.toUpperCase();
+            // Update greeting
+            const greetings = { italian:'Ciao', french:'Bonjour', catalan:'Hola' };
+            const nameEl = document.getElementById('welcome-name');
+            if (nameEl) nameEl.textContent = `${greetings[lang]}, ${state.name}.`;
+            // Re-render all sections
+            renderLinguisticsContent();
+            renderGrammarContent();
+            renderDialogsContent();
+            renderResourcesContent();
+            renderJournalContent();
+            // Close dropdown
+            document.getElementById('lang-dropdown').classList.remove('open');
+        }
+
+        function renderResourcesContent() {
+            const sec = document.getElementById('resourcesSection');
+            if (sec) sec.innerHTML = getResourcesContent();
+        }
+
+        function filterDialogs(btn, cat) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.dialog-card').forEach(card => {
+                card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+            });
+        }
+
+        function openDialog(id) {
+            const body = document.getElementById('dlg-' + id);
+            if (!body) return;
+            const isOpen = body.style.display !== 'none';
+            document.querySelectorAll('.dialog-body').forEach(b => b.style.display = 'none');
+            if (!isOpen) body.style.display = 'block';
+        }
+
+        function toggleTranslations(id) {
+            document.querySelectorAll(`#dlg-${id} .dlg-en`).forEach(el => {
+                el.style.display = el.style.display === 'none' ? '' : 'none';
+            });
+        }
+
+        function togglePractice(id) {
+            const practiceInputs = document.querySelectorAll(`#dlg-${id} .dlg-practice-input`);
+            const itLines = document.querySelectorAll(`#dlg-${id} .dlg-it`);
+            const isPractice = practiceInputs[0] && practiceInputs[0].style.display !== 'none';
+            // Every other line (speaker B = odd index) is the practice target
+            practiceInputs.forEach((inp, i) => {
+                if (i % 2 === 1) {
+                    inp.style.display = isPractice ? 'none' : 'block';
+                    if (itLines[i]) itLines[i].style.display = isPractice ? '' : 'none';
+                }
+            });
+        }
+
+        function checkDialogLine(btn, correct) {
+            const input = btn.previousElementSibling;
+            const ans = input.value.trim().toLowerCase();
+            const ok = correct.toLowerCase();
+            btn.textContent = ans === ok ? '✓' : '✗';
+            btn.style.color = ans === ok ? '#2a7a2a' : 'var(--accent)';
+        }
+
+        function chk(btn, correct) {
+            const input = btn.previousElementSibling;
+            const ans = input.value.trim();
+            const ok = correct.trim();
+            const match = ans.toLowerCase() === ok.toLowerCase();
+            const fb = btn.parentElement.querySelector('.ex-fb');
+            if (fb) fb.remove();
+            const div = document.createElement('div');
+            div.className = 'ex-fb';
+            div.style.cssText = `font-size:12px;margin-top:6px;padding:6px 10px;border-left:2px solid ${match?'#2a7a2a':'var(--accent)'}`;
+            div.textContent = match ? '✓ Correct!' : `✗ Answer: ${correct}`;
+            btn.parentElement.appendChild(div);
+        }
+
+        function toggleExpand(row) {
+            const content = row.nextElementSibling;
+            if (!content || !content.classList.contains('expandable-content')) return;
+            const isOpen = content.style.display === 'block';
+            content.style.display = isOpen ? 'none' : 'block';
+            const arrow = row.querySelector('.arrow');
+            if (arrow) arrow.textContent = isOpen ? '→' : '↓';
+            // Mark progress dot
+            const dot = row.querySelector('.progress-dot');
+            if (dot && !isOpen) dot.classList.add('started');
+        }
+
+        // Initialize
+        renderQuizStep();
+    </script>
+</body>
+</html>
